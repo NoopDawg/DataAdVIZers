@@ -28,10 +28,15 @@
 						<p>Viz 1</p>
 					</div>
 				</div>
-				<div class="row" id="anup">
-					<div>
-						<p>Viz 2</p>
+				<div class="row" >
+					<div class="form-group container">
+						<span> Field Type: </span>
+						<select id="device-filter" class="form-control" onchange="updateVisualization()">
+							<option value="percentage">Percent</option>
+							<option value="units">Units Sold</option>
+						</select>
 					</div>
+					<div id="histogramRace"></div>
 				</div>
 				<div class="row" id="michael">
 					<div>
@@ -55,5 +60,6 @@
 
 	<!-- own js files -->
 	<script src="js/main.js"></script>
+	<script src="js/histogram.js"></script>
 	</body>
 </html>
