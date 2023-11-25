@@ -33,9 +33,18 @@
 						<p>Viz 2</p>
 					</div>
 				</div>
+				<div id="chart-area"> </div>
 				<div class="row" id="michael">
 					<div>
-						<p>Viz 3</p>
+						<p>Trend Chart for History of prices</p>
+						<label for="area">View By:</label>
+						<select id="area" onchange = "updateVisualization(originalData)">
+							<option value="Average">Average</option>
+							<option value="Median">Median</option>
+							<option value="Sales">Sales</option>
+							<option value="Listings">Listings</option>
+							<option value="Inventory">Months in Inventory</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -52,6 +61,7 @@
 
 	<!-- d3 -->
 	<script src="https://d3js.org/d3.v7.min.js"></script>
+	<script src="js/michael.js"></script>
 
 	<!-- own js files -->
 	<script src="js/main.js"></script>
