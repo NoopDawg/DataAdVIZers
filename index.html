@@ -28,15 +28,12 @@
 						<p>Viz 1</p>
 					</div>
 				</div>
-				<div class="row" >
+				<div class="row viz-2" >
 					<div class="form-group container">
-						<span> Field Type: </span>
-						<select id="device-filter" class="form-control" onchange="updateVisualization()">
-							<option value="percentage">Percent</option>
-							<option value="units">Units Sold</option>
-						</select>
+						<button id="play-button" class="btn btn-primary" onclick="autoPlayViz()">Play Viz</button>
 					</div>
 					<div id="histogramRace"></div>
+					<div id="lineChartBrush"></div>
 				</div>
 				<div class="row" id="michael">
 					<div>
@@ -61,5 +58,6 @@
 	<!-- own js files -->
 	<script src="js/main.js"></script>
 	<script src="js/histogram.js"></script>
+	<script src="js/lineChartBrush.js"></script>
 	</body>
 </html>

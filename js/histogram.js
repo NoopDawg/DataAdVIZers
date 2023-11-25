@@ -31,7 +31,7 @@ class HistogramRace {
             d.date = self.formatData(d.date);
         })
         self.initVis();
-        self.autoPlayDates()
+        // self.autoPlayDates()
     }
 
     formatData(dateString) {
@@ -106,6 +106,12 @@ class HistogramRace {
         }
 
         updateChart(); // Start the auto-play
+    }
+
+    onSelectionChange(date) {
+        const self = this;
+        self.selectedDate = date;
+        self.wrangleData();
     }
 
     wrangleData() {
