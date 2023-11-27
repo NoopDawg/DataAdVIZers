@@ -116,7 +116,6 @@ class HistogramRace {
 
     wrangleData() {
         const self = this;
-        console.log(self.selectedDate);
         const oneMonthBefore = new Date(self.selectedDate.getFullYear(),
             self.selectedDate.getMonth() - 1, self.selectedDate.getDate());
         const oneMonthAfter = new Date(self.selectedDate.getFullYear(),

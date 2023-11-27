@@ -1,6 +1,6 @@
 // Load Data
 let parseDate = d3.timeParse("%Y-%m");
-let formatDate = d3.timeFormat("%Y-Q%q");
+let formatDate = d3.timeFormat("%YQ%q");
 let histogramRace, lineChartBrush
 
 let promises = [
@@ -62,16 +62,36 @@ function createVisualizations(data) {
     }
 
     histogramRace = new HistogramRace("histogramRace", homePricesPercentages);
-    lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI);
+    lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
 
     eventHandler.bind("selectionChanged", function(event){
-        let rangeStart = event.detail[0];
-        let rangeEnd = event.detail[1];
-        console.log(rangeStart)
-        console.log(rangeEnd)
-        histogramRace.onSelectionChange(rangeStart, rangeEnd);
+        let newDate = event.detail;
+        histogramRace.onSelectionChange(newDate);
     });
 
+}
+
+/**
+ * Requires a date in the format "YYYYQq" e.g. "2022Q1"
+ * @param dateString
+ * @returns {Date | *}
+ */
+let parseDateString = (dateString) => {
+    const self = this;
+    let year = dateString.substring(0, 4);
+    let quarter = dateString.substring(4).trim();
+    let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
+    return parseDate(year + "-" + month)
+}
+
+/**
+ * Round a date to the nearest quarter
+ * @param date e.g. "Date Object"
+ * @returns {Date | *} Date object rounded to the nearest quarter
+ */
+let roundToQuarter = (date) => {
+    let dateString = formatDate(date);
+    return parseDateString(dateString);
 }
 
 function autoPlayViz() {

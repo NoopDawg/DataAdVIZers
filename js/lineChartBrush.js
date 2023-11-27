@@ -6,25 +6,25 @@ class LineChartBrush {
         this.data = _data;
         this.eventHandler = _eventHandler;
         this.margins = {top: 20, bottom: 20, right: 20, left: 30}
-        self.dateOptions = [...new Set(_data.map(d => d.period))].map(d => self.formatData(d));
+        self.dateOptions = [...new Set(_data.map(d => d.period))].map(d => parseDateString(d));
 
 
         self.selectedDate = parseDate("2019-01");
         self.data.forEach(d => {
-            d.date = self.formatData(d.date);
+            d.date = parseDateString(d.date);
         })
 
         console.log(self.data);
         this.initVis();
     }
 
-    formatData(dateString) {
-        const self = this;
-        let year = dateString.substring(0, 4);
-        let quarter = dateString.substring(4).trim();
-        let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
-        return parseDate(year + "-" + month)
-    }
+    // formatData(dateString) {
+    //     const self = this;
+    //     let year = dateString.substring(0, 4);
+    //     let quarter = dateString.substring(4).trim();
+    //     let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
+    //     return parseDate(year + "-" + month)
+    // }
 
     initVis() {
         const self = this;
@@ -109,10 +109,10 @@ class LineChartBrush {
                 // Update the brush position (this makes the brush act like a slider)
                 d3.select(this).call(self.brush.move, newBrushCoords);
 
-                // Trigger event or callback with the date range
-                console.log("Nearest Date Range:", dateRange.map(d => d.toISOString().split('T')[0]));
+                let middleDate = new Date(dateRange[0] + (dateRange[1] - dateRange[0]) / 2);
+                let roundedMidDate = roundToQuarter(middleDate);
 
-                self.eventHandler.trigger("selectionChanged", dateRange);
+                self.eventHandler.trigger("selectionChanged", roundedMidDate);
             }
         }
 
