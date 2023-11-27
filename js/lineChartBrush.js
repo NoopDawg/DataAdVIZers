@@ -125,6 +125,10 @@ class LineChartBrush {
             .attr("class", "brush")
             .call(self.brush);
 
+        // easier to remove the expansion handles than disable them
+        self.brushGroup.selectAll(".handle").remove()
+
+
         self.brushGroup.call(self.brush.move, [0,brushWidth])
     }
 
