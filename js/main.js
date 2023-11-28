@@ -1,7 +1,7 @@
 // Load Data
 let parseDate = d3.timeParse("%Y-%m");
 let formatDate = d3.timeFormat("%YQ%q");
-let histogramRace, lineChartBrush
+let histogramRace, lineChartBrush, doubleLinecChart
 
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
@@ -34,7 +34,19 @@ let promises = [
             date: d['Period'],
             hpi: d['housing_price_index_sa']
        }
-    })
+    }),
+    d3.csv("data/MedianHouseholdIncome1984-2022.csv", function(d) {
+        return {
+            period: d['DATE'],
+            income: +d['MEHOINUSA646N']
+       }
+    }),
+    d3.csv("data/MedianPricesOfHousesSold1984-2022.csv", function(d) {
+        return {
+            period: d['DATE'],
+            value: +d['INCOME']
+       }
+    }),
 ];
 Promise.all(promises).then(function (data) {
         createVisualizations(data)
@@ -49,6 +61,12 @@ function createVisualizations(data) {
     console.log(homePricesUnits)
     let homePricesHPI = data[2]
 
+    const MedianHouseholdIncome = data[3];
+    const MedianPricesOfHousesSold = data[4];
+    const doubleLineData = {
+        yData: MedianHouseholdIncome,
+        xData: MedianPricesOfHousesSold
+    };
 
     let eventHandler = {
         bind: (eventName, handler) => {
@@ -61,14 +79,34 @@ function createVisualizations(data) {
         }
     }
 
-    histogramRace = new HistogramRace("histogramRace", homePricesPercentages);
-    lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
+    // 
+    // CREATING VIZ BASED ON CURRENT PAGE
+    //
+    function getLastPartOfPath() {
+        var pathArray = window.location.pathname.split('/');
+        return pathArray[pathArray.length - 1];
+    }
+    const currentPath = getLastPartOfPath();
+    console.log(currentPath);
+
+    if (currentPath === 'index.html') {
+        histogramRace = new HistogramRace("histogramRace", homePricesPercentages);
+        lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
+    }
+    else if(currentPath === 'secondPage.html') {
+        doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
+    }
+    else if(currentPath === 'thirdPage.html') {
+        // viz's on the the exploratory page
+    }
+    else if(currentPath === 'finalPage.html') {
+        // solution viz here
+    }
 
     eventHandler.bind("selectionChanged", function(event){
         let newDate = event.detail;
         histogramRace.onSelectionChange(newDate);
-    });
-
+    });   
 }
 
 /**

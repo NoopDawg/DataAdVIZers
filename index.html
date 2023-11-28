@@ -15,19 +15,9 @@
 	</head>
 
 	<body>
-	<div class="container">
-		<div class="row" >
-			<div>
+		<div class="container">
+			<div class="row" >
 				<h1>Not Your Mother's Housing Market</h1>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-12">
-				<div class="row" id="alyssa">
-					<div>
-						<p>Viz 1</p>
-					</div>
-				</div>
 				<div class="row viz-2" >
 					<div class="form-group container">
 						<button id="play-button" class="btn btn-primary" onclick="autoPlayViz()">Play Viz</button>
@@ -35,35 +25,18 @@
 					<div id="histogramRace"></div>
 					<div id="lineChartBrush"></div>
 				</div>
-				<div id="chart-area"> </div>
-				<div class="row" id="michael">
-					<div>
-						<p>Trend Chart for History of prices</p>
-						<label for="area">View By:</label>
-						<select id="area" onchange = "updateVisualization(originalData)">
-							<option value="Average">Average</option>
-							<option value="Median">Median</option>
-							<option value="Sales">Sales</option>
-							<option value="Listings">Listings</option>
-							<option value="Inventory">Months in Inventory</option>
-						</select>
-					</div>
-				</div>
 			</div>
+
+			<div class="page-nav">
+                <a href="secondPage.html" class="button">Next Page</a>
+            </div>
 		</div>
-		<div class="row"></div>
-	</div>
-
-
-
-
 
 	<!-- embedding JS libraries -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 
 	<!-- d3 -->
 	<script src="https://d3js.org/d3.v7.min.js"></script>
-	<script src="js/michael.js"></script>
 
 	<!-- own js files -->
 	<script src="js/main.js"></script>
