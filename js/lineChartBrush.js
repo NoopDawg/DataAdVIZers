@@ -14,17 +14,8 @@ class LineChartBrush {
             d.date = parseDateString(d.date);
         })
 
-        console.log(self.data);
         this.initVis();
     }
-
-    // formatData(dateString) {
-    //     const self = this;
-    //     let year = dateString.substring(0, 4);
-    //     let quarter = dateString.substring(4).trim();
-    //     let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
-    //     return parseDate(year + "-" + month)
-    // }
 
     initVis() {
         const self = this;
@@ -92,7 +83,7 @@ class LineChartBrush {
         //         console.log(selectedTimeRange)
         //     });
         // Function to handle brush and drag events
-        const brushWidth = 10;
+        self.brushWidth = 10;
 
         function brushed(event) {
             if (event.sourceEvent && event.sourceEvent.type === "mousemove") {
@@ -104,7 +95,7 @@ class LineChartBrush {
 
                 // Adjust the brush window to fixed width
                 let midPoint = (brushCoords[0] + brushCoords[1]) / 2;
-                let newBrushCoords = [midPoint - brushWidth / 2, midPoint + brushWidth / 2];
+                let newBrushCoords = [midPoint - self.brushWidth / 2, midPoint + self.brushWidth / 2];
 
                 // Update the brush position (this makes the brush act like a slider)
                 d3.select(this).call(self.brush.move, newBrushCoords);
@@ -129,7 +120,17 @@ class LineChartBrush {
         self.brushGroup.selectAll(".handle").remove()
 
 
-        self.brushGroup.call(self.brush.move, [0,brushWidth])
+        self.brushGroup.call(self.brush.move, [0,self.brushWidth])
+    }
+
+    moveBrush(date) {
+        const self = this;
+
+        // Adjust the brush window to fixed width
+        let midPoint = self.xScale(date);
+        let newBrushCoords = [midPoint - self.brushWidth / 2, midPoint + self.brushWidth / 2];
+
+        d3.select(".brush").call(self.brush.move, newBrushCoords);
     }
 
 }

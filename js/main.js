@@ -25,7 +25,7 @@ let promises = [
             period: d['Period'],
             date: d['Period'],
             price_band: d["Price Band"],
-            value: +d["percentage"]
+            value: +d["units"]
         };
     }),
     d3.csv("data/quarterlyHPI_summary.csv", function(d) {
@@ -56,9 +56,7 @@ Promise.all(promises).then(function (data) {
 
 function createVisualizations(data) {
     let homePricesPercentages = data[0]
-    console.log(homePricesPercentages.sort((a, b) => b.date - a.date))
     let homePricesUnits = data[1]
-    console.log(homePricesUnits)
     let homePricesHPI = data[2]
 
     const MedianHouseholdIncome = data[3];
@@ -90,7 +88,7 @@ function createVisualizations(data) {
     console.log(currentPath);
 
     if (currentPath === 'index.html') {
-        histogramRace = new HistogramRace("histogramRace", homePricesPercentages);
+        histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
         lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
     }
     else if(currentPath === 'secondPage.html') {
@@ -106,7 +104,12 @@ function createVisualizations(data) {
     eventHandler.bind("selectionChanged", function(event){
         let newDate = event.detail;
         histogramRace.onSelectionChange(newDate);
-    });   
+    });
+
+    eventHandler.bind("autoMoveBrush", function(event){
+        let newDate = event.detail;
+        lineChartBrush.moveBrush(newDate);
+    })
 }
 
 /**

@@ -3,6 +3,13 @@
     width: 50%;
 }
 
+.tooltip {
+    background-color: #FDF7E4;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
 #lineChartBrush {
     height: 200px;
     width: 50%;
