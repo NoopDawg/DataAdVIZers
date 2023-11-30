@@ -1,3 +1,65 @@
+/* GOOGLE FONTS IMPORTS */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400;1,700&family=Proza+Libre:ital,wght@0,400;0,700;1,400&display=swap');
+/* 
+font-family: 'Cormorant Garamond', serif;
+font-family: 'Proza Libre', sans-serif; 
+*/
+
+/* MAIN COLORS */
+:root {
+    --blue: #009FB7;
+    --yellow: #FED766;
+    --orange: #FE4A49;
+    --red: #870048;
+    --green: #58FF9E;
+}
+
+body{
+    background-color: var(--red);
+    color: white;
+    font-family: 'Proza Libre', sans-serif; 
+    text-align: center;
+    padding-top: 2rem;
+}
+
+h1{
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+h2{
+    font-size: 1.25rem;
+}
+
+.white-txt{
+    color: white;
+}
+
+.modular_block{
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+#introText{
+    max-width: 650px;
+}
+
+.highlight{
+    color: var(--green);
+    font-weight: bold;
+}
+
+.page-nav{
+    display: flex;
+    justify-content: end;
+}
+
 #histogramRace {
     height: 400px;
     width: 50%;
@@ -21,19 +83,18 @@
 
 /* Style the button */
 .button {
-    display: inline-block;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 1rem;
     text-align: center;
     text-decoration: none;
-    background-color: #4CAF50;
-    color: white;
-    border: 1px solid #4CAF50;
-    border-radius: 4px;
+    background-color: white;
+    color: var(--red);
+    border-radius: 5px;
     cursor: pointer;
 }
 
 /* Hover effect */
 .button:hover {
-    background-color: #45a049;
+    background-color: var(--green);
+    color: var(--red);
 }

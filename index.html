@@ -4,31 +4,29 @@
 		<meta charset="utf-8">
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>CS171 - Boilerplate</title>
+		<title>CS171 - Final Project</title>
 
 		<!-- Load CSS libraries -->
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 		<link rel="stylesheet" href="css/style.css">
 
-		<!-- GOOGLE FONTS -->
-		<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,400italic,300italic' rel='stylesheet' type='text/css'>
 	</head>
 
 	<body>
 		<div class="container">
-			<div class="row" >
-				<h1>Not Your Mother's Housing Market</h1>
-				<div class="row viz-2" >
-					<div class="form-group container">
-						<button id="play-button" class="btn btn-primary" onclick="autoPlayViz()">Play Viz</button>
-					</div>
-					<div id="histogramRace"></div>
-					<div id="lineChartBrush"></div>
-				</div>
-			</div>
+            <div id="sub-container" class="d-flex flex-wrap gap-4 justify-content-center mt-4">
+                <div id="introText" class="white-txt d-flex flex-column gap-4 text-center justify-content-center">
+                    <div class="fade-in fade-in-text" id="block1">If you’re one of the older members of GenZ, you’re probably thinking about buying a home and looking into what it takes. </div>
+                    <div class="fade-in fade-in-text" id="block2">Unfortunately, <b>it's not your mothers housing market.</b></div>
+                    <div class="fade-in fade-in-text" id="block3">Since 1960, the median household income has increased by</br><span class="highlight">39%</span></div>
+                    <div class="fade-in fade-in-text" id="block4">while housing prices have increased by </br><span class="highlight">129%</span></div>
+                </div>
 
-			<div class="page-nav">
-                <a href="secondPage.html" class="button">Next Page</a>
+                <div id="bar-graph" class="fade-in modular_block"></div>
+            </div>
+
+			<div class="page-nav fade-in mt-3">
+                <a href="exploreData.html" class="button">Learn More</a>
             </div>
 		</div>
 
@@ -39,8 +37,7 @@
 	<script src="https://d3js.org/d3.v7.min.js"></script>
 
 	<!-- own js files -->
-	<script src="js/main.js"></script>
-	<script src="js/histogram.js"></script>
-	<script src="js/lineChartBrush.js"></script>
+	<script src="js/introText.js"></script>
+    <script src="js/simpleBarGraph.js"></script>
 	</body>
 </html>

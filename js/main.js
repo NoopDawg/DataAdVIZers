@@ -87,6 +87,7 @@ function createVisualizations(data) {
     const currentPath = getLastPartOfPath();
     console.log(currentPath);
 
+    // OLD ROUTING
     if (currentPath === 'index.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
         lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
@@ -99,6 +100,16 @@ function createVisualizations(data) {
     }
     else if(currentPath === 'finalPage.html') {
         // solution viz here
+    }
+
+    // NEW ROUTING
+    if (currentPath === 'exploreData.html') {
+        histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
+        doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
+        autoPlayViz();
+    }
+    if(currentPath === 'currentMarket.html') {
+        // map vis called here?
     }
 
     eventHandler.bind("selectionChanged", function(event){
