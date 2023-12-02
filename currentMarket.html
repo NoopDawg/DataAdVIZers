@@ -20,14 +20,19 @@
                 <!-- TODO: THESE ARE NOT HOOKED UP TO ANYTHING YET -->
                 <div id="filter-range">
                     <div class="d-inline">
-                        <input type="number" id="minRange" value="0" min="0" max="100" step="1" oninput="">
-                        -
-                        <input type="number" id="maxRange" value="100" min="0" max="100" step="1" oninput="">
+                        <label for="range-filter">Select Average Price:</label>
+
+                            <input type="range" min="97000" max="1000000" value="97000" id="range-filter">
+                            <span id="range-value">97000</span>
+
+<!--                        <input type="number" id="minRange" value="0" min="0" max="100" step="1" oninput="">-->
+<!--                        - -->
+<!--                        <input type="number" id="maxRange" value="100" min="0" max="100" step="1" oninput="">-->
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <label for="minRange">Min Price</label>
-                        <label for="maxRange">Max Price</label>
-                    </div>
+<!--                    <div class="d-flex justify-content-between">-->
+<!--                        <label for="minRange">Min Price</label>-->
+<!--                        <label for="maxRange">Max Price</label>-->
+<!--                    </div>-->
                 </div>
                 <div id="map-area" class="w-100"></div>
             </div>
@@ -36,6 +41,7 @@
                 <a href="exploreData.html" class="button">Go Back</a>
             </div>
 		</div>
+
 
 	<!-- embedding JS libraries -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
