@@ -4,6 +4,7 @@ class DoubleLineChart {
     constructor(parentElement, data) {
         this.parentElement = parentElement;
         this.data = data;
+        console.log(this.data);
 
         this.initVis();
     }
@@ -43,26 +44,26 @@ class DoubleLineChart {
         let vis = this;
 
         // Extract x and y values from the data
-        let xValues = vis.filteredData.income.map(d => new Date(d.period).getFullYear());
+        let xValues = vis.filteredData.income.map(d => new Date(d.period));
         let incomeValues = vis.filteredData.income.map(d => d.income);
         let homePriceValues = vis.filteredData.homePrice.map(d => d.value);
 
         // Set up scales
-        let xScale = d3.scaleLinear().domain([1984, 2022]).range([0, vis.width]);
+        let xScale = d3.scaleTime().domain(d3.extent(xValues)).range([0, vis.width]);
         let yScale = d3.scaleLinear().domain([0, d3.max([...incomeValues, ...homePriceValues])]).range([vis.height, 0]);
 
         // Define line functions
         let incomeLine = d3.line()
             .x((d, i) => xScale(xValues[i]))
-            .y(d => yScale(d));
+            .y(d => yScale(d.income));
 
         let homePriceLine = d3.line()
             .x((d, i) => xScale(xValues[i]))
-            .y(d => yScale(d));
+            .y(d => yScale(d.value));
 
         // Add income line
         vis.svg.append("path")
-            .data([incomeValues])
+            .data([vis.filteredData.income])
             .attr("class", "line income-line")
             .attr("d", incomeLine)
             .attr("fill", "none")
@@ -70,7 +71,7 @@ class DoubleLineChart {
 
         // Add home price line
         vis.svg.append("path")
-            .data([homePriceValues])
+            .data([vis.filteredData.homePrice])
             .attr("class", "line home-price-line")
             .attr("d", homePriceLine)
             .attr("fill", "none")
