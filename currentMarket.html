@@ -16,25 +16,41 @@
             <h1>What’s on the market?</h1>
             <h2>Explore the map to see how many homes are available in each state that meet your budget.</h2>
 
-            <div id="sub-container" class="d-flex flex-wrap gap-4 justify-content-center mt-4">
-                <!-- TODO: THESE ARE NOT HOOKED UP TO ANYTHING YET -->
-                <div id="filter-range">
-                    <div class="d-inline">
-                        <label for="range-filter">Select Average Price:</label>
+            <div id="main-content" class="d-flex flex-wrap gap-4 justify-content-center">                
+				<div class="row w-100">
+					<div id="map-area" class="col-xl-7">
+						<div id="filter-range" class="d-flex flex-column align-items-center">
+							<label for="range-filter">Max Average Price:</label>
+							<input type="range" min="97000" max="1000000" value="97000" id="range-filter">
+							<input type="number" min="97000" max="1000000" value="97000" id="range-input">
+						</div>
+						<!-- map populates here -->
+					</div>
 
-                            <input type="range" min="97000" max="1000000" value="97000" id="range-filter">
-                            <span id="range-value">97000</span>
+					<div class="col-xl-1"></div>
 
-<!--                        <input type="number" id="minRange" value="0" min="0" max="100" step="1" oninput="">-->
-<!--                        - -->
-<!--                        <input type="number" id="maxRange" value="100" min="0" max="100" step="1" oninput="">-->
-                    </div>
-<!--                    <div class="d-flex justify-content-between">-->
-<!--                        <label for="minRange">Min Price</label>-->
-<!--                        <label for="maxRange">Max Price</label>-->
-<!--                    </div>-->
-                </div>
-                <div id="map-area" class="w-100"></div>
+					<div id="mortgage-calc" class="modular_block col-xl-4">
+						<h2 class="blue-txt text-center mb-3">Mortgage Calculator</h2>
+
+						<label for="totalLoan">Total Loan Amount ($):</label>
+						<input type="number" id="totalLoan" placeholder="Enter total loan amount" class="form-control mb-3">
+
+						<label for="downPayment">Down Payment ($):</label>
+						<input type="number" id="downPayment" placeholder="Enter down payment" class="form-control mb-3">
+
+						<label for="loanLength">Loan Length (years):</label>
+						<input type="number" id="loanLength" placeholder="Enter loan length" class="form-control mb-3">
+
+						<label for="interestRate">Interest Rate (%):</label>
+						<input type="number" step="0.01" id="interestRate" placeholder="Enter interest rate" class="form-control mb-3">
+
+						<div>
+						<button onclick="calculatePayment()" class="button">Calculate Monthly Payment</button>
+						</div>
+
+						<div id="result"></div>
+					</div>
+				</div>
             </div>
 
 			<div class="page-nav mt-3">

@@ -48,6 +48,10 @@ h2{
     color: var(--eggshell);
 }
 
+.blue-txt{
+    color: var(--prussian-blue);
+}
+
 .modular_block{
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 1rem;
@@ -141,3 +145,10 @@ h2{
 }
 
 /* SOLUTION PAGE */
+#main-content{
+    margin-top: 4rem;
+}
+
+#mortgage-calc{
+    text-align: left;
+}
