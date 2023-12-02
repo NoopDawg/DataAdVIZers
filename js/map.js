@@ -9,12 +9,18 @@ var projection = d3.geoAlbersUsa()
 var path = d3.geoPath().projection(projection);
 
 var color = d3.scaleQuantize()
-    .range(["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#4292c6", "#2171b5", "#08519c", "#08306b"]);  // Colors for housing prices
+    .range(["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6",
+        "#4292c6", "#2171b5", "#08519c", "#08306b"]);  // Colors for housing prices
 
 var mapsvg = d3.select("#map-area")
     .append("svg")
     .attr("width", w)
     .attr("height", h);
+
+var maptooltip = d3.select("#map-area")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 var averages = {};
 
@@ -63,6 +69,14 @@ function drawMap(json) {
         .on('mouseover', function(event, d) {
             // Highlight the state
             d3.select(this).style("fill", "orange");
+
+            // Show maptooltip with state name and average home value
+            maptooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+            maptooltip.html(`<strong>${d.properties.name}</strong><br>Avg Home Value: $${averages[d.properties.name].toFixed(2)}`)
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY - 28) + "px");
         })
         .on('mouseout', function(event, d) {
             // Unhighlight the state
@@ -74,13 +88,18 @@ function drawMap(json) {
                     return "#ccc";  // color for values below the range
                 }
             });
+
+            // Hide maptooltip
+            maptooltip.transition()
+                .duration(0)
+                .style("opacity", 0);
         });
 }
 
 // Update the map and the range value display whenever the range value changes
 d3.select("#range-filter").on("input", function() {
     const inputElement = document.getElementById('range-input');
-    var rangeValue = +this.value;  // Convert to number directly from 'this'
+    var rangeValue = +d3.select(this).node().value;  // Convert to number from the slider
     console.log("Range Value:", rangeValue);  // Debugging line
     inputElement.value = rangeValue;
     d3.select("#range-filter").text(rangeValue);  // Update the range value display
