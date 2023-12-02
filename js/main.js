@@ -38,13 +38,13 @@ let promises = [
     d3.csv("data/MedianHouseholdIncome1984-2022.csv", function(d) {
         return {
             period: d['DATE'],
-            income: +d['MEHOINUSA646N']
+            value: +d['MEHOINUSA646N']
        }
     }),
     d3.csv("data/MedianPricesOfHousesSold1984-2022.csv", function(d) {
         return {
             period: d['DATE'],
-            value: +d['INCOME']
+            value: +d['INCOME'] * 1000
        }
     }),
 ];
@@ -62,8 +62,8 @@ function createVisualizations(data) {
     const MedianHouseholdIncome = data[3];
     const MedianPricesOfHousesSold = data[4];
     const doubleLineData = {
-        yData: MedianHouseholdIncome,
-        xData: MedianPricesOfHousesSold
+        income: MedianHouseholdIncome,
+        homePrice: MedianPricesOfHousesSold
     };
 
     let eventHandler = {
@@ -90,7 +90,7 @@ function createVisualizations(data) {
     // NEW ROUTING
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
-        lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
+        // lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
         // autoPlayViz();
     }

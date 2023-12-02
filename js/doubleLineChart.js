@@ -28,14 +28,43 @@ class DoubleLineChart {
         vis.wrangleData();
     }
 
+    // Function to convert date property to "1984-01-01" format
+    convertDateFormat(obj) {
+        // Split the input date string into month and year
+        const [monthStr, yearStr] = obj.period.split('-');
+
+        // Map the month abbreviation to its numerical value
+        const monthAbbreviations = {
+            Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+            Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+        };
+
+        const inputDate = new Date(parseInt(yearStr, 10), monthAbbreviations[monthStr]);
+        const year = inputDate.getFullYear();
+        const month = (inputDate.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+        const day = inputDate.getDate().toString().padStart(2, '0');
+
+        // Combine the formatted components
+        const formattedDate = `${year}-${month}-${day}`;
+
+        // Update the "period" property in the object
+        obj.period = formattedDate;
+        // console.log("formattedDate", formattedDate);
+
+        return formattedDate;
+    }
+
     wrangleData() {
         let vis = this;
 
-        // Filter data to include only the relevant years
-        vis.filteredData = {
-            income: vis.data.yData.filter(d => d.period >= "1984-01-01" && d.period <= "2022-01-01"),
-            homePrice: vis.data.xData.filter(d => new Date(d.period).getFullYear() >= 1984 && new Date(d.period).getFullYear() <= 2022)
-        };
+        // change to same date format
+        vis.data.homePrice.forEach(vis.convertDateFormat);
+        
+        // Combine the arrays
+        vis.combinedArray = [...vis.data.homePrice, ...vis.data.income];
+
+        // console.log(this.data);
+        // console.log(this.combinedArray);
 
         vis.updateVis();
     }
@@ -44,75 +73,75 @@ class DoubleLineChart {
         let vis = this;
 
         // Extract x and y values from the data
-        let xValues = vis.filteredData.income.map(d => new Date(d.period));
-        let incomeValues = vis.filteredData.income.map(d => d.income);
-        let homePriceValues = vis.filteredData.homePrice.map(d => d.value);
-
+        let xValues = vis.combinedArray.map(d => d.period);
+        let homePrices = vis.data.homePrice.map(d => d.value);
+        let incomes = vis.data.income.map(d => d.value);
+    
         // Set up scales
-        let xScale = d3.scaleTime().domain(d3.extent(xValues)).range([0, vis.width]);
-        let yScale = d3.scaleLinear().domain([0, d3.max([...incomeValues, ...homePriceValues])]).range([vis.height, 0]);
-
+        let xScale = d3.scaleBand().domain(xValues).range([0, vis.width]).padding(0.1);
+        let yScale = d3.scaleLinear().domain([0, d3.max([...homePrices, ...incomes])]).range([vis.height, 0]);
+    
         // Define line functions
-        let incomeLine = d3.line()
-            .x((d, i) => xScale(xValues[i]))
-            .y(d => yScale(d.income));
-
-        let homePriceLine = d3.line()
-            .x((d, i) => xScale(xValues[i]))
-            .y(d => yScale(d.value));
-
-        // Add income line
+        let value1Line = d3.line()
+          .x(d => xScale(d.period))
+          .y(d => yScale(d.value));
+    
+        let value2Line = d3.line()
+          .x(d => xScale(d.period))
+          .y(d => yScale(d.value));
+    
+        // Add value1 line
         vis.svg.append("path")
-            .data([vis.filteredData.income])
-            .attr("class", "line income-line")
-            .attr("d", incomeLine)
-            .attr("fill", "none")
-            .attr("stroke", "blue");
-
-        // Add home price line
+          .data([vis.data.homePrice])
+          .attr("class", "line value1-line")
+          .attr("d", value1Line)
+          .attr("fill", "none")
+          .attr("stroke", "blue");
+    
+        // Add value2 line
         vis.svg.append("path")
-            .data([vis.filteredData.homePrice])
-            .attr("class", "line home-price-line")
-            .attr("d", homePriceLine)
-            .attr("fill", "none")
-            .attr("stroke", "orange");
-
+          .data([vis.data.income])
+          .attr("class", "line value2-line")
+          .attr("d", value2Line)
+          .attr("fill", "none")
+          .attr("stroke", "orange");
+    
         // Add x-axis
         vis.svg.append("g")
-            .attr("transform", "translate(0," + vis.height + ")")
-            .call(d3.axisBottom(xScale).ticks(10));
-
+          .attr("transform", "translate(0," + vis.height + ")")
+          .call(d3.axisBottom(xScale));
+    
         // Add y-axis
         vis.svg.append("g")
-            .call(d3.axisLeft(yScale));
-
+          .call(d3.axisLeft(yScale));
+    
         // Add labels
         vis.svg.append("text")
-            .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + vis.margin.top + 20) + ")")
-            .style("text-anchor", "middle")
-            .text("Year");
-
+          .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + vis.margin.top + 20) + ")")
+          .style("text-anchor", "middle")
+          .text("Period");
+    
         vis.svg.append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 0 - vis.margin.left)
-            .attr("x", 0 - (vis.height / 2))
-            .attr("dy", "1em")
-            .style("text-anchor", "middle")
-            .text("Amount ($)");
-
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - vis.margin.left)
+          .attr("x", 0 - (vis.height / 2))
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text("Value");
+    
         // Add legend
         vis.svg.append("text")
-            .attr("x", vis.width - 20)
-            .attr("y", 10)
-            .attr("class", "legend")
-            .style("fill", "blue")
-            .text("Median Income");
-
+          .attr("x", vis.width - 20)
+          .attr("y", 10)
+          .attr("class", "legend")
+          .style("fill", "blue")
+          .text("Array 1");
+    
         vis.svg.append("text")
-            .attr("x", vis.width - 20)
-            .attr("y", 30)
-            .attr("class", "legend")
-            .style("fill", "orange")
-            .text("Median Home Price");
+          .attr("x", vis.width - 20)
+          .attr("y", 30)
+          .attr("class", "legend")
+          .style("fill", "orange")
+          .text("Array 2");
     }
 }
