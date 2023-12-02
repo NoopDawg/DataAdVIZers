@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortgage Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 20%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Mortgage Calculator</h2>
+
+<label for="totalLoan">Total Loan Amount ($):</label>
+<input type="number" id="totalLoan" placeholder="Enter total loan amount">
+
+<label for="downPayment">Down Payment ($):</label>
+<input type="number" id="downPayment" placeholder="Enter down payment">
+
+<label for="loanLength">Loan Length (years):</label>
+<input type="number" id="loanLength" placeholder="Enter loan length">
+
+<label for="interestRate">Interest Rate (%):</label>
+<input type="number" step="0.01" id="interestRate" placeholder="Enter interest rate">
+
+<div>
+<button onclick="calculatePayment()">Calculate Monthly Payment</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+  function calculatePayment() {
+    var totalLoan = parseFloat(document.getElementById("totalLoan").value) || 0;
+    var downPayment = parseFloat(document.getElementById("downPayment").value) || 0;
+    var loanLength = parseFloat(document.getElementById("loanLength").value) || 0;
+    var interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
+
+    var principal = totalLoan - downPayment;
+    var calculatedInterest = interestRate / 100 / 12;
+    var calculatedPayments = loanLength * 12;
+
+    var x = Math.pow(1 + calculatedInterest, calculatedPayments);
+    var monthlyPayment = (principal * x * calculatedInterest) / (x - 1);
+
+    document.getElementById("result").innerHTML = "Total Loan Amount: $" + totalLoan.toFixed(2) +
+            "<br>Monthly Payment: $" + monthlyPayment.toFixed(2);
+  }
+</script>
+
+</body>
+</html>
