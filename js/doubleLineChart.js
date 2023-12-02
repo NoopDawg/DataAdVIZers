@@ -13,7 +13,7 @@ class DoubleLineChart {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 0, right: 20, bottom: 55, left: 65 };
+        vis.margin = { top: 0, right: 40, bottom: 55, left: 75 };
         vis.width = document.querySelector(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.querySelector(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -99,7 +99,7 @@ class DoubleLineChart {
           .attr("class", "line value1-line")
           .attr("d", value1Line)
           .attr("fill", "none")
-          .attr("stroke", "blue");
+          .attr("stroke", "var(--midnight-green)");
     
         // Add value2 line
         vis.svg.append("path")
@@ -107,7 +107,7 @@ class DoubleLineChart {
           .attr("class", "line value2-line")
           .attr("d", value2Line)
           .attr("fill", "none")
-          .attr("stroke", "red");
+          .attr("stroke", "var(--rust)");
     
         // Add x-axis with ticks for the first month of each year
         const uniqueYears = Array.from(new Set(xValues.map(d => d.getFullYear())));
@@ -115,6 +115,7 @@ class DoubleLineChart {
 
         vis.svg.append("g")
             .attr("transform", "translate(0," + vis.height + ")")
+            .attr("class", "axis-ticks")
             .call(d3.axisBottom(xScale)
                 .tickValues(xValues.filter(d => {
                     const year = d.getFullYear();
@@ -138,35 +139,38 @@ class DoubleLineChart {
 
         // Add y-axis
         vis.svg.append("g")
+          .attr("class", "axis-ticks")
           .call(d3.axisLeft(yScale));
     
         // Add labels
         vis.svg.append("text")
-          .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + 55) + ")")
+          .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + 50) + ")")
           .style("text-anchor", "middle")
+          .attr("class", "axis")
           .text("Year");
     
         vis.svg.append("text")
+          .attr("class", "axis")
           .attr("transform", "rotate(-90)")
-          .attr("y", 0 - 70)
+          .attr("y", 0 - 75)
           .attr("x", 0 - (vis.height / 2))
           .attr("dy", "1em")
           .style("text-anchor", "middle")
-          .text("Value");
+          .text("Value ($)");
     
         // Add legend
         vis.svg.append("text")
           .attr("x", 30)
           .attr("y", 20)
           .attr("class", "legend")
-          .style("fill", "blue")
+          .style("fill", "var(--midnight-green)")
           .text("Median House Price");
     
         vis.svg.append("text")
           .attr("x", 30)
           .attr("y", 50)
           .attr("class", "legend")
-          .style("fill", "red")
+          .style("fill", "var(--rust)")
           .text("Median Household Income");
     }
 }

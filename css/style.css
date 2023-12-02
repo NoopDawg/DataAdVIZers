@@ -134,4 +134,9 @@ h2{
     border: none;
 }
 
+.axis-ticks { 
+    color: var(--prussian-blue);
+    font-family: 'Proza Libre', sans-serif;
+}
+
 /* SOLUTION PAGE */
