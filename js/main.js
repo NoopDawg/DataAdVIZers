@@ -90,7 +90,7 @@ function createVisualizations(data) {
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
-        // lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
+        lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
         // autoPlayViz();
 
