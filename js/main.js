@@ -102,7 +102,7 @@ function createVisualizations(data) {
 
     //filter timeline data
     michaelData = michaelData.filter(function (d) {
-           return d.Date >= parseDateYear("01/01/2002");
+        return d.Date >= parseDateYear("01/01/2002");
     })
     // michaelData = michaelData.filter(function (d) {
     //     return d.Date.getMonth() + 1 == 1 ||
@@ -120,9 +120,7 @@ function createVisualizations(data) {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
         // lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
         timeLineFilter = new TimeLineFilter("michael", michaelData, eventHandler);
-        // doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
-
-
+        doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
         // autoPlayViz();
 
         replayButton();
@@ -138,7 +136,9 @@ function createVisualizations(data) {
 
     eventHandler.bind("autoMoveBrush", function(event){
         let newDate = event.detail;
-        lineChartBrush.moveBrush(newDate);
+        //lineChartBrush.moveBrush(newDate);
+        timeLineFilter.moveBrush(newDate);
+        doubleLinecChart.filterDate(newDate);
     })
 }
 
