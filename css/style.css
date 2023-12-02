@@ -7,19 +7,28 @@ font-family: 'Proza Libre', sans-serif;
 
 /* MAIN COLORS */
 :root {
-    --blue: #009FB7;
-    --yellow: #FED766;
-    --orange: #FE4A49;
-    --red: #870048;
-    --green: #58FF9E;
+    --prussian-blue: #002c3dff;
+    --midnight-green: #005f73ff;
+    --dark-cyan: #0a9396ff;
+    --tiffany-blue: #94d2bdff;
+    --eggshell: #f7f1deff;
+    --gamboge: #ee9b00ff;
+    --alloy-orange: #ca6702ff;
+    --rust: #bb3e03ff;
+    --rufous: #ae2012ff;
+    --auburn: #9b2226ff;
 }
 
+/* ALL PAGES */
 body{
-    background-color: var(--red);
-    color: white;
+    background-color: var(--prussian-blue);
+    color: var(--eggshell);
     font-family: 'Proza Libre', sans-serif; 
     text-align: center;
-    padding-top: 2rem;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .container{
@@ -32,11 +41,11 @@ h1{
 }
 
 h2{
-    font-size: 1.25rem;
+    font-size: 1.5rem;
 }
 
 .white-txt{
-    color: white;
+    color: var(--eggshell);
 }
 
 .modular_block{
@@ -45,6 +54,29 @@ h2{
     padding: 1rem;
     min-height: 30vh;
 }
+
+.page-nav{
+    display: flex;
+    justify-content: center;
+    gap: 4;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--eggshell);
+    color: var(--midnight-green);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    color: var(--auburn);
+}
+
+/* INDEX PAGE */
 
 .fade-in {
     opacity: 0;
@@ -56,14 +88,23 @@ h2{
 }
 
 .highlight{
-    color: var(--green);
+    color: var(--gamboge);
     font-weight: bold;
+    font-size: 1.5rem;
 }
 
-.page-nav{
-    display: flex;
-    justify-content: end;
+.bar-text{
+    color: var(--prussian-blue);
+    font-family: 'Proza Libre', sans-serif;
+    font-size: 1rem;
 }
+.axis { 
+    color: var(--prussian-blue);
+    font-family: 'Proza Libre', sans-serif;
+    font-size: 13px;
+}
+
+/* EXPLORE PAGE  */
 
 /* #histogramRace {
     height: 400px;
@@ -86,20 +127,4 @@ h2{
     flex-direction: column;
 }
 
-/* Style the button */
-.button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    text-align: center;
-    text-decoration: none;
-    background-color: white;
-    color: var(--red);
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* Hover effect */
-.button:hover {
-    background-color: var(--green);
-    color: var(--red);
-}
+/* SOLUTION PAGE */

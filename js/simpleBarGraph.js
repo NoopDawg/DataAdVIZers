@@ -4,8 +4,8 @@ class SimpleBarGraph {
     constructor(parentElement) {
         this.parentElement = parentElement;
         this.data = [
-            { option: 'Gen Z’s Expectations', amount: 223468, color: 'var(--yellow)' },
-            { option: 'Actual U.S. Median Sales Price', amount: 363300, color: 'var(--blue)' }
+            { option: 'Gen Z’s Expectations', amount: 223468, color: 'var(--alloy-orange)' },
+            { option: 'Actual U.S. Median Sales Price', amount: 363300, color: 'var(--auburn)' }
         ];
 
         this.initVis();
@@ -15,8 +15,8 @@ class SimpleBarGraph {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 20, right: 20, bottom: 30, left: 50 };
-        vis.width = 400 - vis.margin.left - vis.margin.right;
+        vis.margin = { top: 50, right: 0, bottom: 30, left: 0 };
+        vis.width = 550 - vis.margin.left - vis.margin.right;
         vis.height = 400 - vis.margin.top - vis.margin.bottom;
 
         // Append the SVG to the parent element
@@ -36,7 +36,7 @@ class SimpleBarGraph {
         // Set up X-axis scale
         var x = d3.scaleBand()
             .range([0, vis.width])
-            .padding(0.1)
+            .padding(0.3)
             .domain(vis.data.map(function(d) { return d.option; }));
 
         // Set up Y-axis scale
@@ -52,21 +52,30 @@ class SimpleBarGraph {
             .style("fill", function(d) { return d.color; })
             .attr("x", function(d) { return x(d.option); })
             .attr("width", x.bandwidth())
-            .attr("y", function(d) { return y(d.amount); })
-            .attr("height", function(d) { return vis.height - y(d.amount); });
+            .attr("y", vis.height) // Initial position at the bottom
+            .attr("height", 0) // Initial height as 0
+            .transition() // Apply transition
+            .duration(5000) // Set the duration of the animation (adjust as needed)
+            .attr("y", function(d) { return y(d.amount); }) // Final position
+            .attr("height", function(d) { return vis.height - y(d.amount); }); // Final height
 
         // Add text labels on top of the bars
         vis.svg.selectAll(".bar-text")
             .data(vis.data)
             .enter().append("text")
             .attr("class", "bar-text")
-            .attr("x", function(d) { return x(d.option) + x.bandwidth() / 2; })
+            .attr("x", function(d) { return x(d.option) + (x.bandwidth() / 2) - 40; })
             .attr("y", function(d) { return y(d.amount) - 5; })
             .text(function(d) { return "$" + d.amount.toLocaleString(); });
 
         // Add X-axis
         vis.svg.append("g")
-            .attr("transform", "translate(0," + vis.height + ")")
-            .call(d3.axisBottom(x));
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + vis.height + ")")
+        .call(d3.axisBottom(x)
+            .tickSizeInner(0) // Hide inner tick lines
+            .tickSizeOuter(0) // Hide outer tick lines
+            .tickPadding(10) // Padding between ticks and text
+        );
     }
 }

@@ -87,7 +87,7 @@ function createVisualizations(data) {
     const currentPath = getLastPartOfPath();
     console.log(currentPath);
 
-    // NEW ROUTING
+    // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
         // lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
