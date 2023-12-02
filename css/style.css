@@ -135,6 +135,9 @@ h2{
     border: none;
 }
 
+.brush > .selection {
+    stroke-opacity: 0.3;
+}
 .axis-ticks { 
     color: var(--prussian-blue);
     font-family: 'Proza Libre', sans-serif;

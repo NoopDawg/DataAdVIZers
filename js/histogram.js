@@ -23,16 +23,21 @@ class HistogramRace {
 
 
         self.eventHandler = eventHandler;
-        self.playDuration = 10000;
+        self.playDuration = 8000;
         self.updateInterval = self.playDuration / self.dateOptions.length;
 
+        console.log(self.updateInterval)
 
         self.selectedDate = parseQuarterDate("2019-01");
         self.data.forEach(d => {
             d.date = self.formatData(d.date);
         })
         self.initVis();
-        self.autoPlayDates()
+
+        const waitTime = 1000; // 1 second, for example
+        setTimeout(() => {
+            self.autoPlayDates();
+        }, waitTime);
     }
 
     formatData(dateString) {
