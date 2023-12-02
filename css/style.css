@@ -58,7 +58,6 @@ h2{
 .page-nav{
     display: flex;
     justify-content: center;
-    gap: 4;
 }
 
 .button {
@@ -125,6 +124,14 @@ h2{
 
 .viz-2 {
     flex-direction: column;
+}
+
+#play-button{
+    position: absolute;
+    left: 3vw;
+    background-color: var(--tiffany-blue);
+    color: var(--midnight-green);
+    border: none;
 }
 
 /* SOLUTION PAGE */

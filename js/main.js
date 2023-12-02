@@ -93,6 +93,8 @@ function createVisualizations(data) {
         // lineChartBrush = new LineChartBrush("lineChartBrush", homePricesHPI, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
         // autoPlayViz();
+
+        replayButton();
     }
     if(currentPath === 'currentMarket.html') {
         // map vis called here?
@@ -141,3 +143,22 @@ function autoPlayViz() {
 window.addEventListener('resize', function () {
     location.reload();
 });
+
+function replayButton(){
+    // Get the button element
+    var button = document.getElementById("play-button");
+
+    // Store the original HTML content
+    var originalContent = button.innerHTML;
+
+    // Change content on hover
+    button.addEventListener("mouseover", function() {
+        // Replace the content with the desired text or HTML
+        button.innerHTML = "Replay Animation";
+    });
+
+    // Restore content when not hovering
+    button.addEventListener("mouseout", function() {
+        button.innerHTML = originalContent;
+    });
+}
