@@ -79,9 +79,11 @@ function drawMap(json) {
 
 // Update the map and the range value display whenever the range value changes
 d3.select("#range-filter").on("input", function() {
+    const inputElement = document.getElementById('range-input');
     var rangeValue = +this.value;  // Convert to number directly from 'this'
     console.log("Range Value:", rangeValue);  // Debugging line
-    d3.select("#range-value").text(rangeValue);  // Update the range value display
+    inputElement.value = rangeValue;
+    d3.select("#range-filter").text(rangeValue);  // Update the range value display
 
     mapsvg.selectAll("path")
         .style("fill", function(d) {
