@@ -120,7 +120,7 @@ function createVisualizations(data) {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
         // lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
         timeLineFilter = new TimeLineFilter("michael", michaelData, eventHandler);
-        // doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
+        doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
         // autoPlayViz();
 
         replayButton();
