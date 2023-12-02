@@ -1,7 +1,8 @@
 // Load Data
-let parseDate = d3.timeParse("%Y-%m");
+let parseQuarterDate = d3.timeParse("%Y-%m");
+let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
-let histogramRace, lineChartBrush, doubleLinecChart
+let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter
 
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
@@ -33,20 +34,31 @@ let promises = [
             period: d['Period'],
             date: d['Period'],
             hpi: d['housing_price_index_sa']
-       }
+        }
     }),
     d3.csv("data/MedianHouseholdIncome1984-2022.csv", function(d) {
         return {
             period: d['DATE'],
             value: +d['MEHOINUSA646N']
-       }
+        }
     }),
     d3.csv("data/MedianPricesOfHousesSold1984-2022.csv", function(d) {
         return {
             period: d['DATE'],
             value: +d['INCOME'] * 1000
-       }
+        }
     }),
+    d3.csv("data/Yearly_Data.csv", function(d) {
+        return {
+            Date: parseDateYear(d.Date),
+            Sales: +d.Sales,
+            Dollar: +d.Dollar,
+            Average: +d.Average,
+            Median: +d.Median,
+            Listings: +d.Listings,
+            Inventory: +d.Inventory,
+        }
+    })
 ];
 Promise.all(promises).then(function (data) {
         createVisualizations(data)
@@ -58,6 +70,7 @@ function createVisualizations(data) {
     let homePricesPercentages = data[0]
     let homePricesUnits = data[1]
     let homePricesHPI = data[2]
+    let michaelData = data[5]
 
     const MedianHouseholdIncome = data[3];
     const MedianPricesOfHousesSold = data[4];
@@ -77,7 +90,7 @@ function createVisualizations(data) {
         }
     }
 
-    // 
+    //
     // CREATING VIZ BASED ON CURRENT PAGE
     //
     function getLastPartOfPath() {
@@ -87,11 +100,27 @@ function createVisualizations(data) {
     const currentPath = getLastPartOfPath();
     console.log(currentPath);
 
+    //filter timeline data
+    michaelData = michaelData.filter(function (d) {
+           return d.Date >= parseDateYear("01/01/2002");
+    })
+    // michaelData = michaelData.filter(function (d) {
+    //     return d.Date.getMonth() + 1 == 1 ||
+    //         d.Date.getMonth() + 1 == 4 ||
+    //         d.Date.getMonth() + 1 == 7 ||
+    //         d.Date.getMonth() + 1 == 10;
+    // })
+
+    console.log(michaelData)
+    console.log(michaelData)
+    console.log(homePricesUnits)
+
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
-        lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
-        doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
+        // lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
+        timeLineFilter = new TimeLineFilter("michael", michaelData, eventHandler);
+        // doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
         // autoPlayViz();
 
         replayButton();
@@ -121,7 +150,7 @@ let parseDateString = (dateString) => {
     let year = dateString.substring(0, 4);
     let quarter = dateString.substring(4).trim();
     let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
-    return parseDate(year + "-" + month)
+    return parseQuarterDate(year + "-" + month)
 }
 
 /**
@@ -143,6 +172,10 @@ function autoPlayViz() {
 window.addEventListener('resize', function () {
     location.reload();
 });
+
+function updateTimeLineBrush(){
+    timeLineFilter.updateVisualization()
+}
 
 function replayButton(){
     // Get the button element
