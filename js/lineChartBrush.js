@@ -9,7 +9,7 @@ class LineChartBrush {
         self.dateOptions = [...new Set(_data.map(d => d.period))].map(d => parseDateString(d));
 
 
-        self.selectedDate = parseDate("2019-01");
+        self.selectedDate = parseQuarterDate("2019-01");
         self.data.forEach(d => {
             d.date = parseDateString(d.date);
         })
@@ -34,7 +34,7 @@ class LineChartBrush {
         self.xScale = d3.scaleLinear()
             .domain(
                 [
-                    d3.min(self.data, d => d.date),
+                    d3.min(self.data, d => d.ate),
                     d3.max(self.data, d => d.date)
                 ]
             )

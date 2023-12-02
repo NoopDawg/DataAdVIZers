@@ -27,7 +27,7 @@ class HistogramRace {
         self.updateInterval = self.playDuration / self.dateOptions.length;
 
 
-        self.selectedDate = parseDate("2019-01");
+        self.selectedDate = parseQuarterDate("2019-01");
         self.data.forEach(d => {
             d.date = self.formatData(d.date);
         })
@@ -40,7 +40,7 @@ class HistogramRace {
         let year = dateString.substring(0, 4);
         let quarter = dateString.substring(4).trim();
         let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
-        return parseDate(year + "-" + month)
+        return parseQuarterDate(year + "-" + month)
     }
 
     combineData(percentageData, unitsData) {
@@ -134,7 +134,7 @@ class HistogramRace {
         let currentIndex = 0;
 
         function updateChart() {
-            if (currentIndex < self.dateOptions.length - 1) {
+            if (currentIndex < self.dateOptions.length) {
             // if (currentIndex < 2) {
                 self.selectedDate = self.dateOptions[currentIndex];
 
