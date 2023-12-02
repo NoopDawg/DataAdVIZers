@@ -4,7 +4,7 @@ class DoubleLineChart {
     constructor(parentElement, data) {
         this.parentElement = parentElement;
         this.data = data;
-        console.log(this.data);
+        // console.log(this.data);
 
         this.initVis();
     }
@@ -13,9 +13,9 @@ class DoubleLineChart {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 20, right: 20, bottom: 30, left: 50 };
-        vis.width = 600 - vis.margin.left - vis.margin.right;
-        vis.height = 400 - vis.margin.top - vis.margin.bottom;
+        vis.margin = { top: 0, right: 20, bottom: 55, left: 65 };
+        vis.width = document.querySelector(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
+        vis.height = document.querySelector(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
         // Append the SVG to the parent element
         vis.svg = d3.select(vis.parentElement)
@@ -64,7 +64,7 @@ class DoubleLineChart {
         vis.combinedArray = [...vis.data.homePrice, ...vis.data.income];
 
         // console.log(this.data);
-        // console.log(this.combinedArray);
+        console.log(this.combinedArray);
 
         vis.updateVis();
     }
@@ -73,12 +73,15 @@ class DoubleLineChart {
         let vis = this;
 
         // Extract x and y values from the data
+        vis.combinedArray.forEach(d => {
+            d.period = new Date(d.period);
+        });
         let xValues = vis.combinedArray.map(d => d.period);
         let homePrices = vis.data.homePrice.map(d => d.value);
         let incomes = vis.data.income.map(d => d.value);
     
         // Set up scales
-        let xScale = d3.scaleBand().domain(xValues).range([0, vis.width]).padding(0.1);
+        let xScale = d3.scaleTime().domain(d3.extent(xValues)).range([0, vis.width]);
         let yScale = d3.scaleLinear().domain([0, d3.max([...homePrices, ...incomes])]).range([vis.height, 0]);
     
         // Define line functions
@@ -104,26 +107,48 @@ class DoubleLineChart {
           .attr("class", "line value2-line")
           .attr("d", value2Line)
           .attr("fill", "none")
-          .attr("stroke", "orange");
+          .attr("stroke", "red");
     
-        // Add x-axis
+        // Add x-axis with ticks for the first month of each year
+        const uniqueYears = Array.from(new Set(xValues.map(d => d.getFullYear())));
+        const showEveryOtherYear = uniqueYears.length > 20;
+
         vis.svg.append("g")
-          .attr("transform", "translate(0," + vis.height + ")")
-          .call(d3.axisBottom(xScale));
-    
+            .attr("transform", "translate(0," + vis.height + ")")
+            .call(d3.axisBottom(xScale)
+                .tickValues(xValues.filter(d => {
+                    const year = d.getFullYear();
+                    const month = d.getMonth();
+                    if (showEveryOtherYear) {
+                        return uniqueYears.indexOf(year) % 2 === 0 && month === 0; // Show only first month of every other year
+                    } else {
+                        return month === 0; // Show only first month of every year
+                    }
+                }))
+                .tickFormat(d3.timeFormat("%Y"))
+                .tickPadding(10) // Adjust as needed
+                .tickSizeOuter(0) // Optional: Hide ticks at the ends
+            )
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("dy", "0.5em")
+            .attr("transform", "rotate(-45)");
+
+
         // Add y-axis
         vis.svg.append("g")
           .call(d3.axisLeft(yScale));
     
         // Add labels
         vis.svg.append("text")
-          .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + vis.margin.top + 20) + ")")
+          .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + 55) + ")")
           .style("text-anchor", "middle")
-          .text("Period");
+          .text("Year");
     
         vis.svg.append("text")
           .attr("transform", "rotate(-90)")
-          .attr("y", 0 - vis.margin.left)
+          .attr("y", 0 - 70)
           .attr("x", 0 - (vis.height / 2))
           .attr("dy", "1em")
           .style("text-anchor", "middle")
@@ -131,17 +156,17 @@ class DoubleLineChart {
     
         // Add legend
         vis.svg.append("text")
-          .attr("x", vis.width - 20)
-          .attr("y", 10)
+          .attr("x", 30)
+          .attr("y", 20)
           .attr("class", "legend")
           .style("fill", "blue")
-          .text("Array 1");
+          .text("Median House Price");
     
         vis.svg.append("text")
-          .attr("x", vis.width - 20)
-          .attr("y", 30)
+          .attr("x", 30)
+          .attr("y", 50)
           .attr("class", "legend")
-          .style("fill", "orange")
-          .text("Array 2");
+          .style("fill", "red")
+          .text("Median Household Income");
     }
 }

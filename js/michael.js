@@ -2,8 +2,8 @@
 let margin = {top: 50, right: 40, bottom: 60, left: 60};
 
 // Set the width and height of the SVG element
-let width = 800 - margin.left - margin.right;
-let height = 400 - margin.top - margin.bottom;
+let width = document.querySelector("#michael").getBoundingClientRect().width - margin.left - margin.right;
+let height = document.querySelector("#michael").getBoundingClientRect().height - margin.top - margin.bottom;
 
 // Create the SVG element and append it to the michael div
 let svg = d3.select("#michael").append("svg")

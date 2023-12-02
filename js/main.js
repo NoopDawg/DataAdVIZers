@@ -135,3 +135,9 @@ let roundToQuarter = (date) => {
 function autoPlayViz() {
     histogramRace.autoPlayDates();
 }
+
+
+// Reload the page on window resize (automatic responsivness)
+window.addEventListener('resize', function () {
+    location.reload();
+});

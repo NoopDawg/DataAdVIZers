@@ -22,6 +22,10 @@ body{
     padding-top: 2rem;
 }
 
+.container{
+    max-width: 95vw;
+}
+
 h1{
     font-weight: 700;
     font-size: 2rem;
@@ -39,6 +43,7 @@ h2{
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 1rem;
     padding: 1rem;
+    min-height: 30vh;
 }
 
 .fade-in {
@@ -60,10 +65,10 @@ h2{
     justify-content: end;
 }
 
-#histogramRace {
+/* #histogramRace {
     height: 400px;
     width: 50%;
-}
+} */
 
 .tooltip {
     background-color: #FDF7E4;
