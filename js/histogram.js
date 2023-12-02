@@ -17,7 +17,7 @@ class HistogramRace {
         // self.data = self.formatData(data);
         self.data = this.combineData(percentageData, unitsData);
         self.parentElement = parentElement;
-        self.margins = { top: 20, right: 20, bottom: 30, left: 40 };
+        self.margins = { top: 20, right: 20, bottom: 100, left: 40 };
         self.priceBands = [...new Set(self.data.map(d => d.price_band))];
         self.dateOptions = [...new Set(self.data.map(d => d.date))].map(d => self.formatData(d));
 

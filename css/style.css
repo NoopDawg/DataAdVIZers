@@ -103,6 +103,9 @@ h2{
     font-size: 13px;
 }
 
+.axis-label {
+
+}
 /* EXPLORE PAGE  */
 
 /* #histogramRace {
@@ -138,7 +141,7 @@ h2{
 .brush > .selection {
     stroke-opacity: 0.3;
 }
-.axis-ticks { 
+.axis-ticks, .tick, .axis-labels, .axis-label, .y-axis, .x-axis {
     color: var(--prussian-blue);
     font-family: 'Proza Libre', sans-serif;
 }
