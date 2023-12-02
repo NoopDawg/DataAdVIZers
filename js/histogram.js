@@ -134,7 +134,7 @@ class HistogramRace {
         let currentIndex = 0;
 
         function updateChart() {
-            if (currentIndex < self.dateOptions.length - 1) {
+            if (currentIndex < self.dateOptions.length) {
             // if (currentIndex < 2) {
                 self.selectedDate = self.dateOptions[currentIndex];
 

@@ -136,7 +136,8 @@ function createVisualizations(data) {
 
     eventHandler.bind("autoMoveBrush", function(event){
         let newDate = event.detail;
-        lineChartBrush.moveBrush(newDate);
+        //lineChartBrush.moveBrush(newDate);
+        timeLineFilter.moveBrush(newDate);
     })
 }
 
