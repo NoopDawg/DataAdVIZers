@@ -197,3 +197,20 @@ function replayButton(){
         button.innerHTML = originalContent;
     });
 }
+
+function calculatePayment() {
+    var totalLoan = parseFloat(document.getElementById("totalLoan").value) || 0;
+    var downPayment = parseFloat(document.getElementById("downPayment").value) || 0;
+    var loanLength = parseFloat(document.getElementById("loanLength").value) || 0;
+    var interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
+
+    var principal = totalLoan - downPayment;
+    var calculatedInterest = interestRate / 100 / 12;
+    var calculatedPayments = loanLength * 12;
+
+    var x = Math.pow(1 + calculatedInterest, calculatedPayments);
+    var monthlyPayment = (principal * x * calculatedInterest) / (x - 1);
+
+    document.getElementById("result").innerHTML = "Total Loan Amount: $" + totalLoan.toFixed(2) +
+            "<br>Monthly Payment: $" + monthlyPayment.toFixed(2);
+  }

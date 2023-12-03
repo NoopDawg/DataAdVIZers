@@ -5,7 +5,7 @@ class TimeLineFilter {
         this.eventHandler = _eventHandler; // This can be used for handling custom events
 
         // Define margins and calculate width and height as in file2
-        this.margins = { top: 50, right: 40, bottom: 60, left: 60 };
+        this.margins = { top: 10, right: 40, bottom: 80, left: 60 };
         this.initChart();
         this.updateVisualization();
     }
@@ -61,7 +61,7 @@ class TimeLineFilter {
             .datum(self.data)
             .attr("class", "line")
             .attr("fill", "none")
-            .attr("stroke", "steelblue")
+            .attr("stroke", "var(--rufous)")
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .attr("stroke-width", 1.5)
@@ -99,6 +99,13 @@ class TimeLineFilter {
         self.brushGroup = self.svg.append("g")
             .attr("class", "brush")
             .call(self.brush);
+
+        self.brushGroup.selectAll(".overlay")
+            .each(function() {
+                d3.select(this).on("mousedown touchstart", function(event) {
+                    event.stopPropagation(); // Stop mousedown event
+                });
+            });
 
         // easier to remove the expansion handles than disable them
         self.brushGroup.selectAll(".handle").remove()
@@ -156,7 +163,10 @@ class TimeLineFilter {
         let midPoint = self.xScale(date);
         let newBrushCoords = [midPoint - self.brushWidth / 2, midPoint + self.brushWidth / 2];
 
-        d3.select(".brush").call(self.brush.move, newBrushCoords);
+        d3.select(".brush")
+            .transition()
+            .duration(50)
+            .call(self.brush.move, newBrushCoords);
     }
 
     // Additional methods from file1 to be implemented here

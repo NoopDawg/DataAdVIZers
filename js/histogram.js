@@ -23,16 +23,21 @@ class HistogramRace {
 
 
         self.eventHandler = eventHandler;
-        self.playDuration = 10000;
+        self.playDuration = 8000;
         self.updateInterval = self.playDuration / self.dateOptions.length;
 
+        console.log(self.updateInterval)
 
         self.selectedDate = parseQuarterDate("2019-01");
         self.data.forEach(d => {
             d.date = self.formatData(d.date);
         })
         self.initVis();
-        // self.autoPlayDates()
+
+        const waitTime = 1000; // 1 second, for example
+        setTimeout(() => {
+            self.autoPlayDates();
+        }, waitTime);
     }
 
     formatData(dateString) {
@@ -191,6 +196,13 @@ class HistogramRace {
 
         bars.exit().remove() //unnecessary, should have the same number of bars
 
+        // Define colors far bars
+        var colorLeft = d3.rgb("#ee9b00ff");
+        var colorRight = d3.rgb("#ae2012ff");
+        var colorScale = d3.scaleLinear()
+        .domain([0, self.displayData.length - 1])
+        .range([colorLeft, colorRight]);
+
         // console.log(self.displayData)
         bars.enter()
             .append("rect")
@@ -225,7 +237,7 @@ class HistogramRace {
             })
             .attr("width", self.xScale.bandwidth())
             .attr("height", d => self.height - self.yScale(self.catchNaN(d.percentage)))
-            .attr("fill", "steelblue")
+            .attr("fill", function(d, i) { return colorScale(i); })
             .attr("opacity", 0.5)
 
         if (self.currentTooltipBar) {
