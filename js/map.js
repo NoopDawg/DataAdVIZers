@@ -46,13 +46,12 @@ d3.json("data/city.json").then(function(data) {
         color.domain(d3.extent(Object.values(averages).map(d => Number(d))));
         console.log(Object.values(averages));
 
-        drawMap(json);
+        drawMap(json, 0); // Initial draw with rangeValue 0
     });
 });
 
-function drawMap(json) {
-    var rangeValue = +d3.select("#range-filter").node().value;  // Convert to number
-    console.log("Range Value:", rangeValue);  // Debugging line
+function drawMap(json, rangeValue) {
+    mapsvg.selectAll("*").remove(); // Clear previous elements
 
     mapsvg.selectAll("path")
         .data(json.features)
@@ -75,7 +74,7 @@ function drawMap(json) {
             maptooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            maptooltip.html(`<strong>${d.properties.name}</strong><br>Avg Home Value: $${averages[d.properties.name].toFixed(2)}`)
+            maptooltip.html(`<strong>${d.properties.name}</strong><br>Avg Home Value: $${averages[d.properties.name].toFixed(0)}K`)
                 .style("left", (event.pageX) + "px")
                 .style("top", (event.pageY - 28) + "px");
         })
@@ -86,7 +85,7 @@ function drawMap(json) {
                 if (value >= rangeValue) {
                     return color(value);
                 } else {
-                    return "#ccc";  // color for values below the range
+                    return "#ccc";
                 }
             });
 
@@ -95,6 +94,26 @@ function drawMap(json) {
                 .duration(0)
                 .style("opacity", 0);
         });
+
+    // Append text labels
+    mapsvg.selectAll("text")
+        .data(json.features)
+        .enter()
+        .append("text")
+        .attr("x", function(d) {
+            return path.centroid(d)[0]; // X-coordinate at centroid
+        })
+        .attr("y", function(d) {
+            return path.centroid(d)[1]; // Y-coordinate at centroid
+        })
+        .text(function(d) {
+            var avgValue = averages[d.properties.name] / 1000; // Convert to thousands
+            return `$${avgValue.toFixed(0)}K`;
+        })
+        .attr("text-anchor", "middle") // Center the text
+        .attr("alignment-baseline", "middle") // Center the text
+        .style("font-size", "10px") // Adjust font size as needed
+        .style("fill", "black"); // Text color
 }
 
 // Update the map and the range value display whenever the range value changes
@@ -105,13 +124,21 @@ d3.select("#range-filter").on("input", function() {
     inputElement.value = rangeValue;
     d3.select("#range-filter").text(rangeValue);  // Update the range value display
 
+    // Update text labels
+    mapsvg.selectAll("text")
+        .text(function(d) {
+            var avgValue = averages[d.properties.name] / 1000; // Convert to thousands
+            return `$${avgValue.toFixed(1)}K`;
+        });
+
+    // Update map colors
     mapsvg.selectAll("path")
         .style("fill", function(d) {
             var value = averages[d.properties.name];
             if (value >= rangeValue) {
                 return color(value);
             } else {
-                return "#ccc";  // color for values below the range
+                return "#ccc";
             }
         });
 });
