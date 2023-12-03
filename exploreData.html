@@ -17,28 +17,26 @@
             <h2>Explore the data below to see how much the housing market has changed over time.</h2>
 
             <div id="sub-container" class="mt-4">
-                <div id="michael" class="modular_block w-100 mb-4">
+                <div id="michael" class="modular_block_short w-100 mb-4">
                     <div>
                         History of 
                         <select id="area" onchange="updateTimeLineBrush()" class="d-inline">
 							<option value="Average">Average</option>
 							<option value="Median">Median</option>
 							<option value="Sales">Sales</option>
-							<option value="Listings">Listings</option>
-                            <!-- removing this because it doesnt work with the title -->
-							<!-- <option value="Inventory">Months in Inventory</option> -->
+							<option value="Listings">Listing</option>
 						</select>
                         Prices
                     </div>
                 </div>
 				<div class="row">
 					<div class="col-md-6 mb-4">
-						<div id="histogramRace" class="modular_block"></div>
+						<div id="histogramRace" class="modular_block tall"></div>
 						<!-- i thought that the viz under #micheal was going to be the main filter -->
 						<!-- <div id="lineChartBrush"></div> -->
 					</div>
 					<div class="col-md-6">
-						<div id="doubleLineChart" class="modular_block"></div>
+						<div id="doubleLineChart" class="modular_block tall"></div>
 					</div>
 				</div>
             </div>

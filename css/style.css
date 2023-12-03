@@ -117,6 +117,17 @@ h2{
     width: 50%;
 } */
 
+.modular_block_short{
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 1rem;
+    padding: 1rem;
+    height: 25vh;
+}
+
+.tall{
+    height: 45vh; 
+}
+
 .tooltip {
     background-color: #FDF7E4;
     padding: 10px;

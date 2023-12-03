@@ -13,7 +13,7 @@ class DoubleLineChart {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 0, right: 40, bottom: 55, left: 75 };
+        vis.margin = { top: 0, right: 40, bottom: 85, left: 72 };
         vis.width = document.querySelector(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.querySelector(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -144,7 +144,7 @@ class DoubleLineChart {
     
         // Add labels
         vis.svg.append("text")
-          .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + 50) + ")")
+          .attr("transform", "translate(" + (vis.width / 2) + " ," + (vis.height + 55) + ")")
           .style("text-anchor", "middle")
           .attr("class", "axis")
           .text("Year");

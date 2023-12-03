@@ -5,7 +5,7 @@ class TimeLineFilter {
         this.eventHandler = _eventHandler; // This can be used for handling custom events
 
         // Define margins and calculate width and height as in file2
-        this.margins = { top: 50, right: 40, bottom: 60, left: 60 };
+        this.margins = { top: 10, right: 40, bottom: 80, left: 60 };
         this.initChart();
         this.updateVisualization();
     }
