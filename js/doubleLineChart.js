@@ -22,7 +22,7 @@ class DoubleLineChart {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 0, right: 40, bottom: 85, left: 72 };
+        vis.margin = { top: 20, right: 40, bottom: 85, left: 72 };
         vis.width = document.querySelector(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.querySelector(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -43,10 +43,12 @@ class DoubleLineChart {
         const uniqueYears = Array.from(new Set(vis.combinedArray.map(d => d.period.getFullYear())));
         const showEveryOtherYear = uniqueYears.length > 20;
 
-        vis.svg.append("g")
+        vis.xAxis = vis.svg.append("g")
             .attr("transform", "translate(0," + vis.height + ")")
-            .attr("class", "axis-ticks")
-            .call(d3.axisBottom(vis.xScale)
+            .attr("class", "axis-ticks x-axis")
+
+
+        vis.xAxis.call(d3.axisBottom(vis.xScale)
                 // .tickValues(vis.xValues.filter(d => {
                 //     const year = d.getFullYear();
                 //     const month = d.getMonth();
@@ -60,16 +62,12 @@ class DoubleLineChart {
                 .tickPadding(10) // Adjust as needed
                 .tickSizeOuter(0) // Optional: Hide ticks at the ends
             )
-            .selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-0.5em")
-            .attr("dy", "0.5em")
-            .attr("transform", "rotate(-45)");
+
 
 
         // Add y-axis
-        vis.svg.append("g")
-            .attr("class", "axis-ticks")
+        vis.yAxis = vis.svg.append("g")
+            .attr("class", "axis-ticks y-axis")
             .call(d3.axisLeft(vis.yScale));
 
         // Add labels
@@ -133,6 +131,14 @@ class DoubleLineChart {
         return formattedDate;
     }
 
+    filterDate(newDate){
+        const vis = this;
+        vis.dateMax = newDate;
+
+        console.log("filterDate triggered", vis.dateMax);
+        vis.wrangleData()
+    }
+
     wrangleData() {
         let vis = this;
 
@@ -147,14 +153,6 @@ class DoubleLineChart {
         vis.updateVis();
     }
 
-    filterDate(newDate){
-        const vis = this;
-        vis.dateMax = newDate;
-
-        console.log("filterDate triggered", vis.dateMax);
-        vis.wrangleData()
-    }
-
 
     updateVis() {
         let vis = this;
@@ -163,6 +161,38 @@ class DoubleLineChart {
         vis.xScale.domain(d3.extent(vis.xValues))
         // let yScale = d3.scaleLinear().domain([0, d3.max([...vis.homePrices, ...vis.incomes])]).range([vis.height, 0]);
         vis.yScale.domain([0, d3.max([...vis.homePrices, ...vis.incomes])])
+
+
+        const uniqueYears = Array.from(new Set(vis.xValues.map(d => d.getFullYear())));
+        const showEveryOtherYear = uniqueYears.length > 20;
+        console.log("uniqueYears", uniqueYears);
+
+        vis.xTickValues = vis.xValues.filter(d => {
+            const year = d.getFullYear();
+            const month = d.getMonth();
+            console.log("year", year, "month", month)
+            if (showEveryOtherYear) {
+                return uniqueYears.indexOf(year) % 2 === 0 && month === 0; // Show only first month of every other year
+            } else {
+                return month === 0; // Show only first month of every year
+            }
+        })
+
+        console.log(vis.xTickValues)
+
+        vis.xAxis.call(
+            d3.axisBottom(vis.xScale)
+                .tickValues(vis.xTickValues)
+                .tickFormat(d3.timeFormat("%Y"))
+                .tickPadding(10) // Adjust as needed
+                .tickSizeOuter(0) // Optional: Hide ticks at the ends
+        );
+
+        vis.xAxis.selectAll(".tick text")
+            .style("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("dy", "0.5em")
+            .attr("transform", "rotate(-45)");
 
         // Define line functions
         let value1Line = d3.line()
@@ -176,22 +206,49 @@ class DoubleLineChart {
         let homePricesLine =  vis.svg.select("#path-homePrice")
             .data([vis.data.homePrice])
 
-        homePricesLine.enter()
-            .append("path")
-            .attr("class", "line value1-line")
-            .merge(homePricesLine)
-            .attr("d", value1Line)
-            .attr("fill", "none")
-            .attr("stroke", "var(--midnight-green)");
+        // homePricesLine.enter()
+        //     .append("path")
+        //     .attr("class", "line value1-line")
+        //     .merge(homePricesLine)
+        //     .attr("d", value1Line)
+        //     .attr("fill", "none")
+        //     .attr("stroke", "var(--midnight-green)");
+
+
+        // Select and update the first line, or create it if it doesn't exist
+        vis.svg.selectAll(".value1-line")
+            .data([vis.data.homePrice])
+            .join(
+                enter => enter.append("path")
+                    .attr("class", "line value1-line")
+                    .attr("fill", "none")
+                    .attr("stroke", "var(--midnight-green)"),
+                update => update
+            )
+            .attr("d", value1Line);
+
+        // Select and update the second line, or create it if it doesn't exist
+        vis.svg.selectAll(".value2-line")
+            .data([vis.data.income])
+            .join(
+                enter => enter.append("path")
+                    .attr("class", "line value2-line")
+                    .attr("fill", "none")
+                    .attr("stroke", "var(--rust)"),
+                update => update
+            )
+            .transition().duration(50).attr("d", value2Line);
 
 
         // // Add value1 line
-        // vis.svg.select("#path-homePrice")
-        //   .data([vis.data.homePrice])
-        //   .attr("class", "line value1-line")
-        //   .attr("d", value1Line)
-        //   .attr("fill", "none")
-        //   .attr("stroke", "var(--midnight-green)");
+        // vis.svg
+        //     .append("path")
+        //     // .select("#path-homePrice")
+        //     .data([vis.data.homePrice])
+        //     .attr("class", "line value1-line")
+        //     .attr("d", value1Line)
+        //     .attr("fill", "none")
+        //     .attr("stroke", "var(--midnight-green)");
         //
         // // Add value2 line
         // vis.svg.append("path")
@@ -200,9 +257,6 @@ class DoubleLineChart {
         //   .attr("d", value2Line)
         //   .attr("fill", "none")
         //   .attr("stroke", "var(--rust)");
-
-
-
 
     }
 }

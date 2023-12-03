@@ -132,6 +132,7 @@ function createVisualizations(data) {
     eventHandler.bind("selectionChanged", function(event){
         let newDate = event.detail;
         histogramRace.onSelectionChange(newDate);
+        doubleLinecChart.filterDate(newDate);
     });
 
     eventHandler.bind("autoMoveBrush", function(event){
