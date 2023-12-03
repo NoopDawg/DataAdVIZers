@@ -8,16 +8,17 @@ var projection = d3.geoAlbersUsa()
 
 var path = d3.geoPath().projection(projection);
 
-var color = d3.scaleQuantize()
-    .range(["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6",
-        "#4292c6", "#2171b5", "#08519c", "#08306b"]);  // Colors for housing prices
+const colorLeft = "#94d2bdff";
+const colorRight = "#ca6702ff";
+var color = d3.scaleLinear()
+    .range([colorLeft, colorRight]);  // Colors for housing prices
 
-var mapsvg = d3.select("#map-area")
+var mapsvg = d3.select("#map")
     .append("svg")
     .attr("width", w)
     .attr("height", h);
 
-var maptooltip = d3.select("#map-area")
+var maptooltip = d3.select("#map")
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
@@ -63,7 +64,7 @@ function drawMap(json) {
             if (value >= rangeValue) {
                 return color(value);
             } else {
-                return "#ccc";  // color for values below the range
+                return "#f7f1deff";  // color for values below the range
             }
         })
         .on('mouseover', function(event, d) {
@@ -114,3 +115,37 @@ d3.select("#range-filter").on("input", function() {
             }
         });
 });
+
+// Create an SVG element for the legend
+var legendWidth = 300;
+var legendHeight = 30;
+
+var legend = d3.select("#legend")
+  .append("svg")
+  .attr("width", legendWidth)
+  .attr("height", legendHeight)
+  .append("g")
+  .attr("transform", "translate(10,0)");
+
+// Create a linear gradient for the legend
+var legendGradient = legend.append("defs")
+  .append("linearGradient")
+  .attr("id", "legend-gradient")
+  .attr("x1", "0%")
+  .attr("y1", "0%")
+  .attr("x2", "100%")
+  .attr("y2", "0%");
+
+legendGradient.append("stop")
+  .attr("offset", "0%")
+  .attr("style", "stop-color:" + colorLeft + ";stop-opacity:1");
+
+legendGradient.append("stop")
+  .attr("offset", "100%")
+  .attr("style", "stop-color:" + colorRight + ";stop-opacity:1");
+
+// Create a rectangle to display the gradient
+legend.append("rect")
+  .attr("width", legendWidth - 20)
+  .attr("height", legendHeight)
+  .style("fill", "url(#legend-gradient)");
