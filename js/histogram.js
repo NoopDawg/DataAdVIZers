@@ -196,6 +196,13 @@ class HistogramRace {
 
         bars.exit().remove() //unnecessary, should have the same number of bars
 
+        // Define colors far bars
+        var colorLeft = d3.rgb("#ee9b00ff");
+        var colorRight = d3.rgb("#ae2012ff");
+        var colorScale = d3.scaleLinear()
+        .domain([0, self.displayData.length - 1])
+        .range([colorLeft, colorRight]);
+
         // console.log(self.displayData)
         bars.enter()
             .append("rect")
@@ -230,7 +237,7 @@ class HistogramRace {
             })
             .attr("width", self.xScale.bandwidth())
             .attr("height", d => self.height - self.yScale(self.catchNaN(d.percentage)))
-            .attr("fill", "steelblue")
+            .attr("fill", function(d, i) { return colorScale(i); })
             .attr("opacity", 0.5)
 
         if (self.currentTooltipBar) {
