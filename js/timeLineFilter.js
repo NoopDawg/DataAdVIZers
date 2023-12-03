@@ -73,18 +73,24 @@ class TimeLineFilter {
             if (event.sourceEvent && event.sourceEvent.type === "mousemove") {
                 // Get the coordinates of the current brush position
                 let brushCoords = d3.brushSelection(this);
-
                 // Calculate the corresponding date range
                 let dateRange = brushCoords.map(self.xScale.invert);
+
 
                 // Adjust the brush window to fixed width
                 let midPoint = (brushCoords[0] + brushCoords[1]) / 2;
                 let newBrushCoords = [midPoint - self.brushWidth / 2, midPoint + self.brushWidth / 2];
 
+
                 // Update the brush position (this makes the brush act like a slider)
                 d3.select(this).call(self.brush.move, newBrushCoords);
 
-                let middleDate = new Date(dateRange[0] + (dateRange[1] - dateRange[0]) / 2);
+                // calculate the middle date of the brush window
+                let middleDate = new Date(
+                    dateRange[0].getTime() +
+                    (dateRange[1].getTime() - dateRange[0].getTime()) / 2
+                );
+
                 let roundedMidDate = roundToQuarter(middleDate);
 
                 self.eventHandler.trigger("selectionChanged", roundedMidDate);

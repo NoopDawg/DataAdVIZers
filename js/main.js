@@ -102,7 +102,7 @@ function createVisualizations(data) {
 
     //filter timeline data
     michaelData = michaelData.filter(function (d) {
-           return d.Date >= parseDateYear("01/01/2002");
+        return d.Date >= parseDateYear("01/01/2002");
     })
     // michaelData = michaelData.filter(function (d) {
     //     return d.Date.getMonth() + 1 == 1 ||
@@ -132,12 +132,14 @@ function createVisualizations(data) {
     eventHandler.bind("selectionChanged", function(event){
         let newDate = event.detail;
         histogramRace.onSelectionChange(newDate);
+        doubleLinecChart.filterDate(newDate);
     });
 
     eventHandler.bind("autoMoveBrush", function(event){
         let newDate = event.detail;
         //lineChartBrush.moveBrush(newDate);
         timeLineFilter.moveBrush(newDate);
+        doubleLinecChart.filterDate(newDate);
     })
 }
 
