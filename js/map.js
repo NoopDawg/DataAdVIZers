@@ -128,7 +128,7 @@ d3.select("#range-filter").on("input", function() {
     mapsvg.selectAll("text")
         .text(function(d) {
             var avgValue = averages[d.properties.name] / 1000; // Convert to thousands
-            return `$${avgValue.toFixed(1)}K`;
+            return `$${avgValue.toFixed(0)}K`;
         });
 
     // Update map colors
