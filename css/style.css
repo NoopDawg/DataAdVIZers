@@ -118,8 +118,9 @@ h2{
 } */
 
 .selection{
-    fill: var(--tiffany-blue);
-    stroke: var(--midnight-green);
+    fill: var(--midnight-green);
+    stroke: var(--tiffany-blue);
+    opacity: 0.9;
 }
 
 .modular_block_short{

@@ -4,7 +4,7 @@ class DoubleLineChart {
     constructor(parentElement, data) {
         this.parentElement = parentElement;
         this.data = data;
-        console.log(this.data);
+        // console.log(this.data);
 
 
 
@@ -135,7 +135,7 @@ class DoubleLineChart {
         const vis = this;
         vis.dateMax = newDate;
 
-        console.log("filterDate triggered", vis.dateMax);
+        // console.log("filterDate triggered", vis.dateMax);
         vis.wrangleData()
     }
 
@@ -165,20 +165,17 @@ class DoubleLineChart {
 
         const uniqueYears = Array.from(new Set(vis.xValues.map(d => d.getFullYear())));
         const showEveryOtherYear = uniqueYears.length > 20;
-        console.log("uniqueYears", uniqueYears);
+        // console.log("uniqueYears", uniqueYears);
 
         vis.xTickValues = vis.xValues.filter(d => {
             const year = d.getFullYear();
             const month = d.getMonth();
-            console.log("year", year, "month", month)
             if (showEveryOtherYear) {
                 return uniqueYears.indexOf(year) % 2 === 0 && month === 0; // Show only first month of every other year
             } else {
                 return month === 0; // Show only first month of every year
             }
         })
-
-        console.log(vis.xTickValues)
 
         vis.xAxis.call(
             d3.axisBottom(vis.xScale)

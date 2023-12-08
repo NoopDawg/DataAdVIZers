@@ -21,6 +21,7 @@ class HistogramRace {
         self.priceBands = [...new Set(self.data.map(d => d.price_band))];
         self.dateOptions = [...new Set(self.data.map(d => d.date))].map(d => self.formatData(d));
 
+        self.maxDate = d3.max(self.dateOptions);
 
         self.eventHandler = eventHandler;
         self.playDuration = 8000;
@@ -34,14 +35,13 @@ class HistogramRace {
         })
         self.initVis();
 
-        const waitTime = 1000; // 1 second, for example
-        setTimeout(() => {
-            self.autoPlayDates();
-        }, waitTime);
+        // const waitTime = 1000; // 1 second, for example
+        // setTimeout(() => {
+        //     self.autoPlayDates();
+        // }, waitTime);
     }
 
     formatData(dateString) {
-        const self = this;
         let year = dateString.substring(0, 4);
         let quarter = dateString.substring(4).trim();
         let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
@@ -164,6 +164,9 @@ class HistogramRace {
 
     wrangleData() {
         const self = this;
+
+        self.selectedDate = self.selectedDate > self.maxDate ? self.maxDate : self.selectedDate;
+
         const oneMonthBefore = new Date(self.selectedDate.getFullYear(),
             self.selectedDate.getMonth() - 1, self.selectedDate.getDate());
         const oneMonthAfter = new Date(self.selectedDate.getFullYear(),

@@ -3,6 +3,7 @@ class TimeLineFilter {
         this.parentElement = _parentElement;
         this.data = _data;
         this.eventHandler = _eventHandler; // This can be used for handling custom events
+        this.brushWidth = 10;
 
         // Define margins and calculate width and height as in file2
         this.margins = { top: 10, right: 40, bottom: 80, left: 60 };
@@ -25,6 +26,8 @@ class TimeLineFilter {
 
         // Initialize scales and axes
         console.log(self.data)
+        self.maxDate = d3.max(self.data, d => d.Date)
+
         self.xScale = d3.scaleTime()
             .domain(
                 [
@@ -32,42 +35,44 @@ class TimeLineFilter {
                     d3.max(self.data, d => d.Date)
                 ]
             )
-            .range([0, self.width])
+            .range([0, self.width - self.brushWidth])
 
-        self.yScale = d3.scaleLinear().range([self.height, 0]);
+        console.log("Max Date:" + d3.max(self.data, d => d.Date))
+        // self.yScale = d3.scaleLinear().range([self.height, 0]);
         self.xAxis = d3.axisBottom(self.xScale);
-        self.yAxis = d3.axisLeft(self.yScale);
+        // self.yAxis = d3.axisLeft(self.yScale);
 
         // Append axes to SVG
         self.svg.append("g")
             .attr("class", "x-axis")
-            .attr("transform", `translate(0, ${self.height})`)
+            .attr("transform", `translate(${self.brushWidth/2}, ${self.height/2})`)
             .call(self.xAxis)
             .append("title")
             .text("Date");
 
-        self.svg.append("g")
-            .attr("class", "y-axis")
-            .call(self.yAxis);
 
-        // Create the line generator
-        self.line = d3.line()
-            .x(d => self.xScale(d.Date))
-            .y(d => self.yScale(d.Sales))
-            .curve(d3.curveCatmullRom.alpha(0.5));
+        // self.svg.append("g")
+        //     .attr("class", "y-axis")
+        //     .call(self.yAxis);
 
-        // Add the line to the SVG element
-        self.svg.append("path")
-            .datum(self.data)
-            .attr("class", "line")
-            .attr("fill", "none")
-            .attr("stroke", "var(--rufous)")
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("stroke-width", 1.5)
-            .attr("d", self.line);
+        // // Create the line generator
+        // self.line = d3.line()
+        //     .x(d => self.xScale(d.Date))
+        //     .y(d => self.yScale(d.Sales))
+        //     .curve(d3.curveCatmullRom.alpha(0.5));
+        //
+        // // Add the line to the SVG element
+        // self.svg.append("path")
+        //     .datum(self.data)
+        //     .attr("class", "line")
+        //     .attr("fill", "none")
+        //     .attr("stroke", "var(--rufous)")
+        //     .attr("stroke-linejoin", "round")
+        //     .attr("stroke-linecap", "round")
+        //     .attr("stroke-width", 1.5)
+        //     .attr("d", self.line);
 
-        self.brushWidth = 10;
+
 
         function brushed(event) {
             if (event.sourceEvent && event.sourceEvent.type === "mousemove") {
@@ -92,6 +97,9 @@ class TimeLineFilter {
                 );
 
                 let roundedMidDate = roundToQuarter(middleDate);
+
+                //constrain to available data
+                roundedMidDate = roundedMidDate > self.maxDate ? self.maxDate : roundedMidDate;
 
                 self.eventHandler.trigger("selectionChanged", roundedMidDate);
             }
@@ -122,18 +130,18 @@ class TimeLineFilter {
 
     updateVisualization() {
         const self = this;
-        let yColumn = document.getElementById("area").value;
+        // let yColumn = document.getElementById("area").value;
 
         self.xScale.domain(d3.extent(self.data, d => d.Date));
 
-        self.yScale.domain(
-            [
-                d3.min(self.data, d => d[yColumn]),
-                d3.max(self.data, d => d[yColumn])
-            ]
-        );
-
-        self.yAxis.scale(self.yScale).ticks(5);
+        // self.yScale.domain(
+        //     [
+        //         d3.min(self.data, d => d[yColumn]),
+        //         d3.max(self.data, d => d[yColumn])
+        //     ]
+        // );
+        //
+        // self.yAxis.scale(self.yScale).ticks(5);
 
         // Update the x axis on the SVG element
         self.svg.select(".x-axis")
@@ -142,18 +150,18 @@ class TimeLineFilter {
             .call(self.xAxis);
 
         // Update the y axis on the SVG element
-        self.svg.select(".y-axis")
-            .transition()
-            .duration(800)
-            .call(self.yAxis);
+        // self.svg.select(".y-axis")
+        //     .transition()
+        //     .duration(800)
+        //     .call(self.yAxis);
 
-        self.line.y(d => self.yScale(d[yColumn]));
+        // self.line.y(d => self.yScale(d[yColumn]));
 
-        self.svg.select(".line")
-            .datum(self.data)
-            .transition()
-            .duration(800)
-            .attr("d", self.line);
+        // self.svg.select(".line")
+        //     .datum(self.data)
+        //     .transition()
+        //     .duration(800)
+        //     .attr("d", self.line);
 
 
         // Additional functionalities from file1 to be implemented:
