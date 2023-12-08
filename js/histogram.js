@@ -27,7 +27,6 @@ class HistogramRace {
         self.playDuration = 8000;
         self.updateInterval = self.playDuration / self.dateOptions.length;
 
-        console.log(self.updateInterval)
 
         self.selectedDate = parseQuarterDate("2019-01");
         self.data.forEach(d => {

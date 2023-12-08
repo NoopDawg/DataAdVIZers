@@ -34,6 +34,13 @@ class DoubleLineChart {
             .append("g")
             .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
+        // clip paths
+        vis.clipPath = vis.svg.append("defs").append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("width", vis.width)
+            .attr("height", vis.height);
+
         // Set up scales
         vis.xScale = d3.scaleTime().range([0, vis.width]);
         vis.yScale = d3.scaleLinear().range([vis.height, 0]);
@@ -145,7 +152,8 @@ class DoubleLineChart {
         // Extract x and y values from the data
         vis.xValues = vis.combinedArray.filter(d => d.period <= vis.dateMax)
             .map(d => d.period);
-        vis.homePrices = vis.data.homePrice.filter(d => d.period <= vis.dateMax)
+        vis.homePrices = vis.data.homePrice
+            .filter(d => d.period <= vis.dateMax)
             .map(d => d.value);
         vis.incomes = vis.data.income.filter(d => d.period <= vis.dateMax)
             .map(d => d.value);
@@ -200,21 +208,14 @@ class DoubleLineChart {
           .x(d => vis.xScale(d.period))
           .y(d => vis.yScale(d.value));
 
-        let homePricesLine =  vis.svg.select("#path-homePrice")
-            .data([vis.data.homePrice])
-
-        // homePricesLine.enter()
-        //     .append("path")
-        //     .attr("class", "line value1-line")
-        //     .merge(homePricesLine)
-        //     .attr("d", value1Line)
-        //     .attr("fill", "none")
-        //     .attr("stroke", "var(--midnight-green)");
-
 
         // Select and update the first line, or create it if it doesn't exist
         vis.svg.selectAll(".value1-line")
-            .data([vis.data.homePrice])
+            .data([
+                vis.data.homePrice.filter(d => {  // Filter out any data points that are outside the y-axis scale
+                    return (vis.yScale(d.value) >=0)
+                })
+            ])
             .join(
                 enter => enter.append("path")
                     .attr("class", "line value1-line")
@@ -236,6 +237,9 @@ class DoubleLineChart {
             )
             .transition().duration(50).attr("d", value2Line);
 
+
+        vis.svg.selectAll(".value1-line, .value2-line")
+            .attr("clip-path", "url(#clip)");
 
         // // Add value1 line
         // vis.svg

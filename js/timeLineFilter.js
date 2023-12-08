@@ -25,7 +25,6 @@ class TimeLineFilter {
             .attr("transform", `translate(${self.margins.left}, ${self.margins.top})`);
 
         // Initialize scales and axes
-        console.log(self.data)
         self.maxDate = d3.max(self.data, d => d.Date)
 
         self.xScale = d3.scaleTime()
@@ -37,7 +36,6 @@ class TimeLineFilter {
             )
             .range([0, self.width - self.brushWidth])
 
-        console.log("Max Date:" + d3.max(self.data, d => d.Date))
         // self.yScale = d3.scaleLinear().range([self.height, 0]);
         self.xAxis = d3.axisBottom(self.xScale);
         // self.yAxis = d3.axisLeft(self.yScale);

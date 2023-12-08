@@ -111,10 +111,6 @@ function createVisualizations(data) {
     //         d.Date.getMonth() + 1 == 10;
     // })
 
-    console.log(michaelData)
-    console.log(michaelData)
-    console.log(homePricesUnits)
-
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
