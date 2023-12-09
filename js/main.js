@@ -3,7 +3,7 @@ let parseQuarterDate = d3.timeParse("%Y-%m");
 let formatQuarterDate = d3.timeFormat("%Y-%m");
 let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
-let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter
+let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis
 
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
@@ -96,14 +96,15 @@ function createVisualizations(data) {
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
-        // lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
         timeLineFilter = new TimeLineFilter("michael", timeLineData, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
+
         // autoPlayViz();
 
         replayButton();
     }
     if(currentPath === 'currentMarket.html') {
+        mapVis = new MapVis("map", statesGeoJSON, countiesGeoJSON, eventHandler);
         // map vis called here?
     }
 
