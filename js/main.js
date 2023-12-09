@@ -1,5 +1,6 @@
 // Load Data
 let parseQuarterDate = d3.timeParse("%Y-%m");
+let formatQuarterDate = d3.timeFormat("%Y-%m");
 let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
 let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter
@@ -12,7 +13,7 @@ let promises = [
         let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
         return {
             period: d['Period'],
-            date: d['Period'],
+            date: convertQuarterDataToDate(d['Period']),
             price_band: d["Price Band"],
             value: +d["percentage"]
         };
@@ -22,19 +23,13 @@ let promises = [
         let year = d["Period"].substring(0, 4);
         let quarter = d["Period"].substring(4).trim();
         let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
+
         return {
             period: d['Period'],
-            date: d['Period'],
+            date: convertQuarterDataToDate(d['Period']),
             price_band: d["Price Band"],
             value: +d["units"]
         };
-    }),
-    d3.csv("data/quarterlyHPI_summary.csv", function(d) {
-        return {
-            period: d['Period'],
-            date: d['Period'],
-            hpi: d['housing_price_index_sa']
-        }
     }),
     d3.csv("data/MedianHouseholdIncome1984-2022.csv", function(d) {
         return {
@@ -48,17 +43,8 @@ let promises = [
             value: +d['INCOME'] * 1000
         }
     }),
-    d3.csv("data/Yearly_Data.csv", function(d) {
-        return {
-            Date: parseDateYear(d.Date),
-            Sales: +d.Sales,
-            Dollar: +d.Dollar,
-            Average: +d.Average,
-            Median: +d.Median,
-            Listings: +d.Listings,
-            Inventory: +d.Inventory,
-        }
-    })
+    d3.json("geojson/states.json"),
+    d3.json("geojson/counties.geojson"),
 ];
 Promise.all(promises).then(function (data) {
         createVisualizations(data)
@@ -68,12 +54,19 @@ Promise.all(promises).then(function (data) {
 
 function createVisualizations(data) {
     let homePricesPercentages = data[0]
+    let timeLineData = homePricesPercentages.map(d => {
+        return {Date: d.date}
+    })
     let homePricesUnits = data[1]
-    let homePricesHPI = data[2]
-    let michaelData = data[5]
+    // console.log(michaelData)
 
-    const MedianHouseholdIncome = data[3];
-    const MedianPricesOfHousesSold = data[4];
+    const statesGeoJSON = data[4];
+    const countiesGeoJSON = data[5];
+
+
+    const MedianHouseholdIncome = data[2];
+    const MedianPricesOfHousesSold = data[3];
+
     const doubleLineData = {
         income: MedianHouseholdIncome,
         homePrice: MedianPricesOfHousesSold
@@ -98,24 +91,13 @@ function createVisualizations(data) {
         return pathArray[pathArray.length - 1];
     }
     const currentPath = getLastPartOfPath();
-    console.log(currentPath);
 
-    //filter timeline data
-    michaelData = michaelData.filter(function (d) {
-        return d.Date >= parseDateYear("01/01/2002");
-    })
-    // michaelData = michaelData.filter(function (d) {
-    //     return d.Date.getMonth() + 1 == 1 ||
-    //         d.Date.getMonth() + 1 == 4 ||
-    //         d.Date.getMonth() + 1 == 7 ||
-    //         d.Date.getMonth() + 1 == 10;
-    // })
 
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
         // lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
-        timeLineFilter = new TimeLineFilter("michael", michaelData, eventHandler);
+        timeLineFilter = new TimeLineFilter("michael", timeLineData, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
         // autoPlayViz();
 
@@ -160,6 +142,13 @@ let parseDateString = (dateString) => {
 let roundToQuarter = (date) => {
     let dateString = formatDate(date);
     return parseDateString(dateString);
+}
+
+let convertQuarterDataToDate = function(dateString) {
+    let year = dateString.substring(0, 4);
+    let quarter = dateString.substring(4).trim();
+    let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
+    return parseQuarterDate(year + "-" + month)
 }
 
 function autoPlayViz() {

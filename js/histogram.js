@@ -19,7 +19,8 @@ class HistogramRace {
         self.parentElement = parentElement;
         self.margins = { top: 20, right: 20, bottom: 100, left: 40 };
         self.priceBands = [...new Set(self.data.map(d => d.price_band))];
-        self.dateOptions = [...new Set(self.data.map(d => d.date))].map(d => self.formatData(d));
+        self.dateOptions = [...new Set(self.data.map(d => formatQuarterDate(d.date)))]
+            .map(d => parseQuarterDate(d)); //get unique dates (Dates objects don't work with sets)
 
         self.maxDate = d3.max(self.dateOptions);
 
@@ -29,9 +30,6 @@ class HistogramRace {
 
 
         self.selectedDate = parseQuarterDate("2019-01");
-        self.data.forEach(d => {
-            d.date = self.formatData(d.date);
-        })
         self.initVis();
 
         // const waitTime = 1000; // 1 second, for example
@@ -40,20 +38,13 @@ class HistogramRace {
         // }, waitTime);
     }
 
-    formatData(dateString) {
-        let year = dateString.substring(0, 4);
-        let quarter = dateString.substring(4).trim();
-        let month = quarter == "Q1" ? "01" : quarter == "Q2" ? "04" : quarter == "Q3" ? "07" : "10";
-        return parseQuarterDate(year + "-" + month)
-    }
-
     combineData(percentageData, unitsData) {
         const self = this;
         let combinedData = [];
         percentageData.forEach(d => {
-            let units = unitsData.filter(e => e.date == d.date && e.price_band == d.price_band)[0];
+            let units = unitsData.filter(e => ((e.date.getTime() - d.date.getTime()) < 1) && e.price_band == d.price_band)[0];
             combinedData.push({
-                date: d.date.trim(),
+                date: d.date,
                 price_band: d.price_band,
                 percentage: d.value,
                 units: units.value
@@ -137,6 +128,7 @@ class HistogramRace {
         const self = this;
         let currentIndex = 0;
 
+        console.log(self.dateOptions.length);
         function updateChart() {
             if (currentIndex < self.dateOptions.length) {
             // if (currentIndex < 2) {
