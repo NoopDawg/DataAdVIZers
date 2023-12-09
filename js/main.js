@@ -101,10 +101,6 @@ function createVisualizations(data) {
     //         d.Date.getMonth() + 1 == 10;
     // })
 
-    console.log(michaelData)
-    console.log(michaelData)
-    console.log(homePricesUnits)
-
     //
     // CREATING VIZ BASED ON CURRENT PAGE
     //

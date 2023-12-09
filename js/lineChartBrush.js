@@ -40,36 +40,36 @@ class LineChartBrush {
             )
             .range([0, self.width]);
 
-        self.yScale = d3.scaleLinear()
-            .domain([d3.min(self.data, d => d.hpi), d3.max(self.data, d => d.hpi)])
-            .range([self.height, 0]);
+        // self.yScale = d3.scaleLinear()
+        //     .domain([d3.min(self.data, d => d.hpi), d3.max(self.data, d => d.hpi)])
+        //     .range([self.height, 0]);
 
         self.xAxis = d3.axisBottom(self.xScale)
             .tickFormat(d3.timeFormat("%Y-Q%q"))
             .ticks(10);
-        self.yAxis = d3.axisLeft(self.yScale).ticks(5);
+        // self.yAxis = d3.axisLeft(self.yScale).ticks(5);
 
         self.svg.append("g")
             .attr("class", "x-axis")
             .attr("transform", `translate(0, ${self.height})`)
             .call(self.xAxis)
 
-        self.svg.append("g")
-            .attr("class", "y-axis")
-            .call(self.yAxis)
+        // self.svg.append("g")
+        //     .attr("class", "y-axis")
+        //     .call(self.yAxis)
 
-        self.line = d3.line()
-            .x(d => self.xScale(d.date))
-            .y(d => self.yScale(d.hpi))
-
-        //Draw line
-        self.svg.append("path")
-            .datum(self.data)
-            .attr("class", "line")
-            .attr("d", self.line)
-            .attr("fill", "none")
-            .attr("stroke", "black")
-            .attr("stroke-width", 1.5)
+        // self.line = d3.line()
+        //     .x(d => self.xScale(d.date))
+        //     .y(d => self.yScale(d.hpi))
+        //
+        // //Draw line
+        // self.svg.append("path")
+        //     .datum(self.data)
+        //     .attr("class", "line")
+        //     .attr("d", self.line)
+        //     .attr("fill", "none")
+        //     .attr("stroke", "black")
+        //     .attr("stroke-width", 1.5)
 
 
 

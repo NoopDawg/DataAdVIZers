@@ -160,15 +160,16 @@ h2{
 } */
 
 .selection{
-    fill: var(--tiffany-blue);
-    stroke: var(--midnight-green);
+    fill: var(--midnight-green);
+    stroke: var(--tiffany-blue);
+    opacity: 0.9;
 }
 
 .modular_block_short{
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 1rem;
     padding: 1rem;
-    height: 25vh;
+    height: 10vh;
 }
 
 .tall{
