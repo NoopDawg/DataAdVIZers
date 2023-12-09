@@ -6,8 +6,6 @@ let formatDate = d3.timeFormat("%YQ%q");
 
 let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis
 
-
-
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
         // Transform "2022Q1" into "2022-01"
