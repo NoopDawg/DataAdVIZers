@@ -4,9 +4,7 @@ let formatQuarterDate = d3.timeFormat("%Y-%m");
 let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
 
-let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis
-let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter;
-
+let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis;
 
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
