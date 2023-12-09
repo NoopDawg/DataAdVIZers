@@ -3,7 +3,8 @@ let parseQuarterDate = d3.timeParse("%Y-%m");
 let formatQuarterDate = d3.timeFormat("%Y-%m");
 let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
-let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter
+let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis
+
 
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
@@ -45,6 +46,28 @@ let promises = [
     }),
     d3.json("geojson/states.json"),
     d3.json("geojson/counties.geojson"),
+    d3.csv("data/incomeData_county_1990_2022.csv", function (d) {
+        return {
+            avg_annual_pay: +d['Annual Average Pay'],
+            annual_avg_weekly_wage: +d['Annual Average Weekly Wage'],
+            area_type: d['Area Type'],
+            area: d['Area'],
+            state: d['St Name'],
+            year: d['Year'],
+            date: convertQuarterDataToDate(d['Year'] + 'Q1'),
+        }
+    }),
+    d3.csv("data/quarterlyHPI_by_state.csv", function(d) {
+        return {
+            state: getStateName(d['state']),
+            state_code: d['state'],
+            year: +d['yr'],
+            quarter: +d['qtr'],
+            date: convertQuarterDataToDate(d['yr'] + 'Q' + d['qtr']),
+            index_nsa: +d['index_nsa'],
+            index_sa: +d['index_sa']
+        }
+    })
 ];
 Promise.all(promises).then(function (data) {
         createVisualizations(data)
@@ -58,19 +81,14 @@ function createVisualizations(data) {
         return {Date: d.date}
     })
     let homePricesUnits = data[1]
-    // console.log(michaelData)
+    const MedianHouseholdIncome = data[2];
+    const MedianPricesOfHousesSold = data[3];
 
     const statesGeoJSON = data[4];
     const countiesGeoJSON = data[5];
 
-
-    const MedianHouseholdIncome = data[2];
-    const MedianPricesOfHousesSold = data[3];
-
-    const doubleLineData = {
-        income: MedianHouseholdIncome,
-        homePrice: MedianPricesOfHousesSold
-    };
+    const incomeData = data[6];
+    const stateHpiData = data[7];
 
     let eventHandler = {
         bind: (eventName, handler) => {
@@ -95,15 +113,26 @@ function createVisualizations(data) {
 
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
+        const doubleLineData = {
+            income: MedianHouseholdIncome,
+            homePrice: MedianPricesOfHousesSold
+        };
+
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
-        // lineChartBrush = new LineChartBrush("michael", homePricesHPI, eventHandler);
         timeLineFilter = new TimeLineFilter("michael", timeLineData, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
+
         // autoPlayViz();
 
         replayButton();
     }
     if(currentPath === 'currentMarket.html') {
+        const mapData = {
+            incomeData: incomeData.filter(d => d.area_type === "State"),
+            stateHpiData: stateHpiData
+        }
+
+        mapVis = new MapVis("map", statesGeoJSON, countiesGeoJSON, mapData, eventHandler);
         // map vis called here?
     }
 
@@ -200,3 +229,137 @@ function calculatePayment() {
     document.getElementById("result").innerHTML = "Total Loan Amount: $" + totalLoan.toFixed(2) +
             "<br>Monthly Payment: $" + monthlyPayment.toFixed(2);
   }
+
+ function getStateCode(stateName) {
+     let state_dict = {
+         'Alabama': 'AL',
+         'Alaska': 'AK',
+         'American Samoa': 'AS',
+         'Arizona': 'AZ',
+         'Arkansas': 'AR',
+         'California': 'CA',
+         'Colorado': 'CO',
+         'Connecticut': 'CT',
+         'Delaware': 'DE',
+         'District Of Columbia': 'DC',
+         'Federated States Of Micronesia': 'FM',
+         'Florida': 'FL',
+         'Georgia': 'GA',
+         'Guam': 'GU',
+         'Hawaii': 'HI',
+         'Idaho': 'ID',
+         'Illinois': 'IL',
+         'Indiana': 'IN',
+         'Iowa': 'IA',
+         'Kansas': 'KS',
+         'Kentucky': 'KY',
+         'Louisiana': 'LA',
+         'Maine': 'ME',
+         'Marshall Islands': 'MH',
+         'Maryland': 'MD',
+         'Massachusetts': 'MA',
+         'Michigan': 'MI',
+         'Minnesota': 'MN',
+         'Mississippi': 'MS',
+         'Missouri': 'MO',
+         'Montana': 'MT',
+         'Nebraska': 'NE',
+         'Nevada': 'NV',
+         'New Hampshire': 'NH',
+         'New Jersey': 'NJ',
+         'New Mexico': 'NM',
+         'New York': 'NY',
+         'North Carolina': 'NC',
+         'North Dakota': 'ND',
+         'Northern Mariana Islands': 'MP',
+         'Ohio': 'OH',
+         'Oklahoma': 'OK',
+         'Oregon': 'OR',
+         'Palau': 'PW',
+         'Pennsylvania': 'PA',
+         'Puerto Rico': 'PR',
+         'Rhode Island': 'RI',
+         'South Carolina': 'SC',
+         'South Dakota': 'SD',
+         'Tennessee': 'TN',
+         'Texas': 'TX',
+         'Utah': 'UT',
+         'Vermont': 'VT',
+         'Virgin Islands': 'VI',
+         'Virginia': 'VA',
+         'Washington': 'WA',
+         'West Virginia': 'WV',
+         'Wisconsin': 'WI',
+         'Wyoming': 'WY'
+     }
+
+
+     return state_dict[stateName];
+
+ }
+
+function getStateName(stateCode) {
+    let codeToState = {
+        'AL': 'Alabama',
+        'AK': 'Alaska',
+        'AS': 'American Samoa',
+        'AZ': 'Arizona',
+        'AR': 'Arkansas',
+        'CA': 'California',
+        'CO': 'Colorado',
+        'CT': 'Connecticut',
+        'DE': 'Delaware',
+        'DC': 'District Of Columbia',
+        'FM': 'Federated States Of Micronesia',
+        'FL': 'Florida',
+        'GA': 'Georgia',
+        'GU': 'Guam',
+        'HI': 'Hawaii',
+        'ID': 'Idaho',
+        'IL': 'Illinois',
+        'IN': 'Indiana',
+        'IA': 'Iowa',
+        'KS': 'Kansas',
+        'KY': 'Kentucky',
+        'LA': 'Louisiana',
+        'ME': 'Maine',
+        'MH': 'Marshall Islands',
+        'MD': 'Maryland',
+        'MA': 'Massachusetts',
+        'MI': 'Michigan',
+        'MN': 'Minnesota',
+        'MS': 'Mississippi',
+        'MO': 'Missouri',
+        'MT': 'Montana',
+        'NE': 'Nebraska',
+        'NV': 'Nevada',
+        'NH': 'New Hampshire',
+        'NJ': 'New Jersey',
+        'NM': 'New Mexico',
+        'NY': 'New York',
+        'NC': 'North Carolina',
+        'ND': 'North Dakota',
+        'MP': 'Northern Mariana Islands',
+        'OH': 'Ohio',
+        'OK': 'Oklahoma',
+        'OR': 'Oregon',
+        'PW': 'Palau',
+        'PA': 'Pennsylvania',
+        'PR': 'Puerto Rico',
+        'RI': 'Rhode Island',
+        'SC': 'South Carolina',
+        'SD': 'South Dakota',
+        'TN': 'Tennessee',
+        'TX': 'Texas',
+        'UT': 'Utah',
+        'VT': 'Vermont',
+        'VI': 'Virgin Islands',
+        'VA': 'Virginia',
+        'WA': 'Washington',
+        'WV': 'West Virginia',
+        'WI': 'Wisconsin',
+        'WY': 'Wyoming'
+    };
+
+    return codeToState[stateCode];
+}

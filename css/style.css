@@ -188,6 +188,11 @@ h2{
     pointer-events: none;
 }
 
+#map {
+    min-height: 60vh;
+
+}
+
 .result_block{
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 1rem;
