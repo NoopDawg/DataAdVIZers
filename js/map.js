@@ -1,10 +1,20 @@
 class MapVis {
-    constructor(_parentElement, statesGeoJSON, countyGeoJSON, _eventHandler) {
+    constructor(_parentElement,
+                statesGeoJSON,
+                countyGeoJSON,
+                mapData,
+                _eventHandler) {
         this.parentElement = _parentElement;
-        this.eventHandler = _eventHandler;
-
-        this.statesGeoJSON = statesGeoJSON;
+        this.statesGeoJSON = statesGeoJSON
         this.countyGeoJSON = countyGeoJSON;
+        this.data = mapData;
+        this.incomeData = mapData.incomeData;
+        this.stateHpiData = mapData.stateHpiData;
+
+        console.log(this.incomeData);
+        console.log(this.stateHpiData);
+
+        this.eventHandler = _eventHandler;
         this.data = [];
         this.displayData = [];
 
@@ -42,10 +52,9 @@ class MapVis {
         self.colorScale = d3.scaleLinear()
             .range([self.minColor, self.maxColor]);  // Colors for housing prices
 
-
-        console.log(self.statesGeoJSON);
         self.svg.selectAll("path")
-            .data(self.statesGeoJSON.features)
+            .data(self.statesGeoJSON.features.filter(d => d.properties.name !== "Texas")
+            )
             .enter()
             .append("path")
             .attr("d", self.path)
@@ -57,15 +66,33 @@ class MapVis {
             .style("stroke-width", 0.5)
             .style("opacity", 0.8)
 
-            // function(d) {
-            //     var value = sums[d.properties.name];
-            //     console.log(value , rangeValue,'range');
-            //     if (value >= rangeValue) {
-            //         return color(value);
-            //     } else {
-            //         return "#f7f1deff";  // color for values below the range
-            //     }
-            // }
+
+        self.statesGeoJSON.features.slice(0,3).filter(d => d.properties.name !== "Texas").forEach(function(d) {
+            let stateName = d.properties.name;
+            console.log(stateName)
+            let stateIncome = self.incomeData.filter(e => e.state === stateName);
+            let stateHpi = self.stateHpiData.filter(e => e.state === stateName);
+
+
+        })
+
+        // Counties
+        // self.svg.selectAll("path")
+        //     .data(self.countyGeoJSON.features)
+        //     .enter()
+        //     .append("path")
+        //     .attr("d", self.path)
+        //     .attr("id", function(d) {
+        //         return d.properties.name;
+        //     })
+        //     .style("fill", "white")
+        //     .style("stroke", "black")
+        //     .style("stroke-width", 0.5)
+        //     .style("opacity", 0.8)
+
+    }
+
+    getStateData(stateName) {
 
     }
 
