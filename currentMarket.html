@@ -26,7 +26,12 @@
 						</div>
 
 						<!-- map populates here -->
-						<div id="map"></div>
+						<div id="map" style="position: relative;">
+							<svg id="map-svg" style="position: absolute; top: 0; left: 0; z-index: 1;"></svg>
+							<canvas id="line-graph-canvas" style="position: absolute; top: 0; left: 0; z-index: 2;"></canvas>
+						</div>
+
+<!--						<div id="map"></div>-->
 
 						<!-- legend -->
 						<!-- im confused what this map is for -->

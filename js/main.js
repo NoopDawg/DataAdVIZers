@@ -5,7 +5,7 @@ let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
 
 let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis
-let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter;
+
 
 
 let promises = [

@@ -11,9 +11,20 @@ class MapVis {
         this.incomeData = mapData.incomeData;
         this.stateHpiData = mapData.stateHpiData;
 
-        console.log(this.incomeData);
-        console.log(this.stateHpiData);
+        this.incomeData.sort((a, b) => a.year - b.year)
+        this.stateHpiData.sort((a, b) => (a.year + (0.1 * a.quarter)) - (b.year + (0.1 * b.quarter)))
 
+        this.incomeData.forEach(d => {
+            d.pct_change = (d.avg_annual_pay - this.incomeData[0].avg_annual_pay) * 100 / this.incomeData[0].avg_annual_pay
+        })
+        this.stateHpiData.forEach(d => {
+            d.pct_change = (d.index_sa - this.stateHpiData[0].index_sa) * 100 / this.stateHpiData[0].index_sa
+        })
+
+        this.maxWidth = 60
+        this.maxHeight = 60
+
+        this.states = statesGeoJSON.features.map(d => d.properties.name);
         this.eventHandler = _eventHandler;
         this.data = [];
         this.displayData = [];
@@ -34,12 +45,18 @@ class MapVis {
         self.height = document.getElementById(self.parentElement).getBoundingClientRect().height - self.margin.top - self.margin.bottom;
 
         //SVG Area
-        self.svg = d3.select("#" + self.parentElement).append("svg")
+        self.svg = d3.select("#map-svg")
             .attr("width", self.width + self.margin.left + self.margin.right)
             .attr("height", self.height + self.margin.top + self.margin.bottom)
             .append("g")
             .attr("transform", `translate(${self.margin.left}, ${self.margin.top})`);
 
+        // Init Canvas
+        self.canvas = d3.select("#line-graph-canvas")
+            .attr("width", self.width + self.margin.left + self.margin.right)
+            .attr("height", self.height + self.margin.top + self.margin.bottom)
+            .attr("class", "plot-canvas")
+            .attr('id', `map-canvas`);
 
         //Map Projection
         self.projection = d3.geoAlbersUsa()
@@ -67,34 +84,120 @@ class MapVis {
             .style("opacity", 0.8)
 
 
-        self.statesGeoJSON.features.slice(0,3).forEach(function(d) {
-            let stateName = d.properties.name;
-            console.log(stateName)
-            let stateIncome = self.incomeData.filter(e => e.state === stateName);
-            let stateHpi = self.stateHpiData.filter(e => e.state === stateName);
+        let maxPct_change = d3.max([d3.max(self.stateHpiData, d => d.pct_change),d3.max(self.incomeData, d => d.pct_change)])
+        self.lineXScale = d3.scaleLinear().range([0, self.maxWidth]).domain(d3.extent(self.incomeData, d => d.date))
+        self.lineYScale = d3.scaleLinear().range([0, self.maxHeight]).domain([0, maxPct_change])
 
-            self.charts[stateName] = new MiniLineChart(stateName, stateIncome, stateHpi);
+
+        let context = self.canvas.node().getContext('2d');
+        context.clearRect(0, 0, self.width, self.height);
+
+        self.states.forEach(state=> {
+            let stateData = self.getStateData(state);
+
+            let position = self.getStatePosition(state);
+
+
+            self.drawLineGraph(stateData.hpi, position.x, position.y, context, {strokeStyle: "red", lineWidth: 1});
+            self.drawAndFillBetweenLines(stateData.income, stateData.hpi, position.x, position.y, context, {fillStyle: "green", lineWidth: 1})
+            self.drawLineGraph(stateData.income, position.x, position.y, context, {strokeStyle: "blue", lineWidth: 1});
         })
-
-        // Counties
-        // self.svg.selectAll("path")
-        //     .data(self.countyGeoJSON.features)
-        //     .enter()
-        //     .append("path")
-        //     .attr("d", self.path)
-        //     .attr("id", function(d) {
-        //         return d.properties.name;
-        //     })
-        //     .style("fill", "white")
-        //     .style("stroke", "black")
-        //     .style("stroke-width", 0.5)
-        //     .style("opacity", 0.8)
 
     }
 
     getStateData(stateName) {
+        const self = this;
+        let stateIncome = self.incomeData.filter(e => e.state == stateName);
+        let stateHpi = self.stateHpiData.filter(e => e.state == stateName);
 
+        return {income: stateIncome, hpi: stateHpi}
     }
+
+    getStatePosition(stateName) {
+        const self = this;
+        // Find the GeoJSON feature for the given state
+        const stateFeature = self.statesGeoJSON.features.find(d => d.properties.name === stateName);
+
+        if (stateFeature) {
+            // Use the D3 geoPath centroid method to calculate the centroid of the state
+            const centroid = self.path.centroid(stateFeature);
+            return { x: centroid[0], y: centroid[1] };
+        } else {
+            // Return a default position or handle the error as appropriate
+            return { x: 0, y: 0 };
+        }
+    }
+
+    // Function to draw a line graph for a state
+    drawLineGraph(stateData, positionX, positionY, context, config) {
+        const self = this;
+        let maxWidth = 30
+        let maxHeight = 30
+        let xScale = d3.scaleLinear().range([0, maxWidth]).domain(d3.extent(stateData, d => d.date))
+        let yScale = d3.scaleLinear().range([0, maxHeight]).domain(d3.extent(stateData, d => d.pct_change))
+
+        // console.log("x: ", positionX, " y: ", positionY)
+        let xscale = 1
+        let yscale = 10
+        context.beginPath();
+        stateData.forEach((point, index) => {
+            // console.log(point)
+            // Calculate x and y based on your data and position
+            let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2; // scale is how much you scale your data point
+            let y = positionY - (self.lineYScale(point.pct_change));// point.value is the data value
+
+            // console.log("x: ", x, " y: ", y)
+
+            if (index === 0) {
+                context.moveTo(x, y);
+            } else {
+                context.lineTo(x, y);
+            }
+        });
+
+        context.strokeStyle = config.strokeStyle; // Set the color of the line
+        context.lineWidth = config.lineWidth; // Set the width of the line
+        context.stroke();
+    }
+
+    // Function to draw and fill the area between two line graphs
+    drawAndFillBetweenLines(stateDataIncome, stateDataHPI, positionX, positionY, context, config) {
+        const self = this;
+
+        // Start the path
+        context.beginPath();
+
+        // Draw the first line
+        stateDataIncome.forEach((point, index) => {
+            let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2;
+            let y = positionY - (self.lineYScale(point.pct_change));
+            if (index === 0) {
+                context.moveTo(x, y);
+            } else {
+                context.lineTo(x, y);
+            }
+        });
+
+        // Draw the second line in reverse
+        for (let i = stateDataHPI.length - 1; i >= 0; i--) {
+            let point = stateDataHPI[i];
+            let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2;
+            let y = positionY - (self.lineYScale(point.pct_change));
+            context.lineTo(x, y);
+        }
+
+        // Close the path and fill
+        context.closePath();
+        context.fillStyle = 'rgba(255,0,0,0.38)'; // Set the fill color
+        context.fillOpacity = 0.2
+        context.fill();
+
+        // Optional: If you also want to draw the lines
+        context.lineWidth = config.lineWidth; // Set the width of the line
+        context.strokeStyle = config.strokeStyle; // Set the color of the line
+        context.stroke();
+    }
+
 
     updateVis() {
 
@@ -102,205 +205,3 @@ class MapVis {
 
 
 }
-
-
-
-//
-//
-// var w = 800;
-// var h = 600;
-// var json;  // Define json here
-//
-// var projection = d3.geoAlbersUsa()
-//     .scale(1000)  // Adjust as needed
-//     .translate([w/2, h/2]);  // Adjust as needed
-//
-// var path = d3.geoPath().projection(projection);
-//
-// const colorLeft = "#94d2bdff";
-// const colorRight = "#ca6702ff";
-// var color = d3.scaleLinear()
-//     .range([colorLeft, colorRight]);  // Colors for housing prices
-//
-// var mapsvg = d3.select("#map")
-//     .append("svg")
-//     .attr("width", w)
-//     .attr("height", h);
-//
-// var maptooltip = d3.select("#map")
-//     .append("div")
-//     .attr("class", "tooltip")
-//     .style("opacity", 0);
-//
-// var sums = {};
-// let originalData;
-// d3.json("data/states.json").then(function(data) {
-//     json = data;
-//     console.log("GeoJSON data:", json.features);
-//     d3.csv("data/median_value_by_portal_code.csv").then(function(data) {
-//
-//         originalData = data;
-//         console.log('CSV data:', originalData);
-//         originalData.forEach(function(d) {
-//             if (!sums[d.state] && sums[d.state] != 0) {
-//                 sums[d.state] = 0;
-//             }else{
-//                 sums[d.state] += Number(d.active_listing_count);
-//             }
-//
-//         });
-//         drawMap(json, 97000);
-//         // Calculate sum of active_listing_count for each state
-//     });
-// });
-// console.log(originalData,'data');
-// function updateVisualization(data, rangeValue) {
-//
-//     data.forEach(function(d) {
-//         if (+d.value < rangeValue) {  // Filter data
-//             if (!sums[d.state] && sums[d.state] != 0) {
-//                 sums[d.state] = 0;
-//             }else{
-//                 sums[d.state] += Number(d.active_listing_count);
-//             }
-//
-//         }
-//     });
-//
-//     color.domain(d3.extent(Object.values(sums).map(d => Number(d))));
-//     console.log(Object.values(sums));
-//     drawMap(json, rangeValue);
-// }
-//
-// function drawMap(json, rangeValue) {
-//     mapsvg.selectAll("*").remove(); // Clear previous elements
-//
-//     mapsvg.selectAll("path")
-//         .data(json.features)
-//         .enter()
-//         .append("path")
-//         .attr("d", path)
-//         .style("fill", function(d) {
-//             var value = sums[d.properties.name];
-//             console.log(value , rangeValue,'range');
-//             if (value >= rangeValue) {
-//                 return color(value);
-//             } else {
-//                 return "#f7f1deff";  // color for values below the range
-//             }
-//         })
-//         .on('mouseover', function(event, d) {
-//             // Highlight the state
-//             d3.select(this).style("fill", "orange");
-//
-//             // Show maptooltip with state name and average home value
-//             maptooltip.transition()
-//                 .duration(200)
-//                 .style("opacity", .9);
-//             maptooltip.html(`<strong>${d.properties.name}</strong><br>Total Active Listings: ${sums[d.properties.name]}`)
-//                 .style("left", (event.pageX) + "px")
-//                 .style("top", (event.pageY - 28) + "px");
-//         })
-//         .on('mouseout', function(event, d) {
-//             // Unhighlight the state
-//             d3.select(this).style("fill", function(d) {
-//                 var value = sums[d.properties.name];
-//                 if (value >= rangeValue) {
-//                     return color(value);
-//                 } else {
-//                     return "#ccc";
-//                 }
-//             });
-//
-//             // Hide maptooltip
-//             maptooltip.transition()
-//                 .duration(0)
-//                 .style("opacity", 0);
-//         });
-//
-//     // Append text labels
-//     mapsvg.selectAll("text")
-//         .data(json.features)
-//         .enter()
-//         .append("text")
-//         .attr("x", function(d) {
-//             return path.centroid(d)[0]; // X-coordinate at centroid
-//         })
-//         .attr("y", function(d) {
-//             return path.centroid(d)[1]; // Y-coordinate at centroid
-//         })
-//         .text(function(d) {
-//             var avgValue = sums[d.properties.name]/1000  // Convert to thousands
-//             return `${avgValue.toFixed(0)}`;
-//         })
-//         .attr("text-anchor", "middle") // Center the text
-//         .attr("alignment-baseline", "middle") // Center the text
-//         .style("font-size", "10px") // Adjust font size as needed
-//         .style("fill", "black"); // Text color
-//
-//     mapsvg.selectAll("text")
-//         .text(function(d) {
-//             return `${sums[d.properties.name]}`;
-//         })
-// }
-//
-// // Update the map and the range value display whenever the range value changes
-// d3.select("#range-filter").on("input", function() {
-//     const inputElement = document.getElementById('range-input');
-//     var rangeValue = +d3.select(this).node().value;  // Convert to number from the slider
-//     console.log("Range Value:", rangeValue);  // Debugging line
-//     inputElement.value = rangeValue;
-//     d3.select("#range-filter").text(rangeValue);  // Update the range value display
-//     updateVisualization(originalData,rangeValue)
-//     // Update text labels
-//     mapsvg.selectAll("text")
-//         .text(function(d) {
-//             var avgValue = sums[d.properties.name]; // Convert to thousands
-//             return avgValue ? `${avgValue.toFixed(0)}` : '0';
-//         });
-//
-//     // Update map colors
-//     mapsvg.selectAll("path")
-//         .style("fill", function(d) {
-//             var value = sums[d.properties.name];
-//             if (value >= rangeValue) {
-//                 return color(value);
-//             } else {
-//                 return "#ccc";
-//             }
-//         });
-// });
-//
-// // Create an SVG element for the legend
-// var legendWidth = 300;
-// var legendHeight = 30;
-//
-// var legend = d3.select("#legend")
-//     .append("svg")
-//     .attr("width", legendWidth)
-//     .attr("height", legendHeight)
-//     .append("g")
-//     .attr("transform", "translate(10,0)");
-//
-// // Create a linear gradient for the legend
-// var legendGradient = legend.append("defs")
-//     .append("linearGradient")
-//     .attr("id", "legend-gradient")
-//     .attr("x1", "0%")
-//     .attr("y1", "0%")
-//     .attr("x2", "100%")
-//     .attr("y2", "0%");
-//
-// legendGradient.append("stop")
-//     .attr("offset", "0%")
-//     .attr("style", "stop-color:" + colorLeft + ";stop-opacity:1");
-//
-// legendGradient.append("stop")
-//     .attr("offset", "100%")
-//     .attr("style", "stop-color:" + colorRight + ";stop-opacity:1");
-//
-// // Create a rectangle to display the gradient
-// legend.append("rect")
-//     .attr("width", legendWidth - 20)
-//     .attr("height", legendHeight)
-//     .style("fill", "url(#legend-gradient)");
