@@ -17,7 +17,7 @@ class MapVis {
         this.eventHandler = _eventHandler;
         this.data = [];
         this.displayData = [];
-
+        this.charts = {};
 
         this.minColor = "#94d2bdff";
         this.maxColor = "#ca6702ff";
@@ -53,7 +53,7 @@ class MapVis {
             .range([self.minColor, self.maxColor]);  // Colors for housing prices
 
         self.svg.selectAll("path")
-            .data(self.statesGeoJSON.features.filter(d => d.properties.name !== "Texas")
+            .data(self.statesGeoJSON.features
             )
             .enter()
             .append("path")
@@ -67,13 +67,13 @@ class MapVis {
             .style("opacity", 0.8)
 
 
-        self.statesGeoJSON.features.slice(0,3).filter(d => d.properties.name !== "Texas").forEach(function(d) {
+        self.statesGeoJSON.features.slice(0,3).forEach(function(d) {
             let stateName = d.properties.name;
             console.log(stateName)
             let stateIncome = self.incomeData.filter(e => e.state === stateName);
             let stateHpi = self.stateHpiData.filter(e => e.state === stateName);
 
-
+            self.charts[stateName] = new MiniLineChart(stateName, stateIncome, stateHpi);
         })
 
         // Counties

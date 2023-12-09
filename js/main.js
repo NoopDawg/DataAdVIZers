@@ -54,6 +54,7 @@ let promises = [
             area: d['Area'],
             state: d['St Name'],
             year: d['Year'],
+            date: convertQuarterDataToDate(d['Year'] + 'Q1'),
         }
     }),
     d3.csv("data/quarterlyHPI_by_state.csv", function(d) {
@@ -62,6 +63,7 @@ let promises = [
             state_code: d['state'],
             year: +d['yr'],
             quarter: +d['qtr'],
+            date: convertQuarterDataToDate(d['yr'] + 'Q' + d['qtr']),
             index_nsa: +d['index_nsa'],
             index_sa: +d['index_sa']
         }
