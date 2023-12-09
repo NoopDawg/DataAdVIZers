@@ -3,7 +3,9 @@ let parseQuarterDate = d3.timeParse("%Y-%m");
 let formatQuarterDate = d3.timeFormat("%Y-%m");
 let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
+
 let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis
+let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter;
 
 
 let promises = [
@@ -101,6 +103,7 @@ function createVisualizations(data) {
         }
     }
 
+
     //
     // CREATING VIZ BASED ON CURRENT PAGE
     //
@@ -109,8 +112,7 @@ function createVisualizations(data) {
         return pathArray[pathArray.length - 1];
     }
     const currentPath = getLastPartOfPath();
-
-
+    // console.log(currentPath);
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         const doubleLineData = {
@@ -125,6 +127,24 @@ function createVisualizations(data) {
         // autoPlayViz();
 
         replayButton();
+
+        // explore page nav buttons
+        // Find the parent div with id exploreNavBtns
+        const exploreNavBtns = document.getElementById('exploreNavBtns');
+
+        // Find all children with class button
+        const buttonChildren = exploreNavBtns.querySelectorAll('.button');
+
+        // Attach onhover function for the first child
+        buttonChildren[0].addEventListener('mouseover', function() {
+            this.innerHTML = "<img src=\"css/arrow-left-solid.svg\" alt=\"Left Arrow\"> Go back";
+        });
+        buttonChildren[0].addEventListener('mouseout', function() {
+            this.innerHTML = "<img src=\"css/arrow-left-solid.svg\" alt=\"Left Arrow\">";
+        });
+        setTimeout(function() {
+            buttonChildren[1].innerHTML = "Learn what it takes to get a home today <img src=\"css/arrow-right-solid.svg\" alt=\"Right Arrow\">";
+        }, 10000);
     }
     if(currentPath === 'currentMarket.html') {
         const mapData = {
@@ -134,6 +154,15 @@ function createVisualizations(data) {
 
         mapVis = new MapVis("map", statesGeoJSON, countiesGeoJSON, mapData, eventHandler);
         // map vis called here?
+
+        // footer button
+        const backBtn = document.getElementById('backBtn');
+        backBtn.addEventListener('mouseover', function() {
+            this.innerHTML = "<img src=\"css/arrow-left-solid.svg\" alt=\"Left Arrow\"> Go back";
+        });
+        backBtn.addEventListener('mouseout', function() {
+            this.innerHTML = "<img src=\"css/arrow-left-solid.svg\" alt=\"Left Arrow\">";
+        });
     }
 
     eventHandler.bind("selectionChanged", function(event){
@@ -363,3 +392,4 @@ function getStateName(stateCode) {
 
     return codeToState[stateCode];
 }
+
