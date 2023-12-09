@@ -4,8 +4,9 @@ class DoubleLineChart {
     constructor(parentElement, data) {
         this.parentElement = parentElement;
         this.data = data;
-        // console.log(this.data);
 
+        this.data.income.sort((a, b) => new Date(a.period) - new Date(b.period));
+        this.data.homePrice.sort((a, b) => new Date(a.period) - new Date(b.period));
 
 
         // Combine the arrays
@@ -14,6 +15,11 @@ class DoubleLineChart {
             d.period = new Date(d.period);
         });
         this.dateMax = new Date(d3.max(this.combinedArray, d => d.period));
+        this.dateMin = new Date(d3.min(this.combinedArray, d => d.period));
+
+        this.referenceHomePrice = this.data.homePrice[0].value
+        this.referenceIncome = this.data.income[0].value
+
 
         this.initVis();
     }
@@ -107,6 +113,40 @@ class DoubleLineChart {
             .attr("class", "legend")
             .style("fill", "var(--rust)")
             .text("Median Household Income");
+
+        // Tooltips
+
+
+        // Tooltip div for displaying values
+        vis.tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .attr("id", "linechart-tooltip")
+            .style("opacity", 0);
+
+        // Vertical line for the tooltip
+        vis.focusLine = vis.svg.append("line")
+            .attr("class", "linechart-focus-line")
+            .style("opacity", 1)
+            .style("stroke", "var(--midnight-green)")
+            .style("stroke-width", "1px")
+            .attr("y1", 0)
+            .attr("y2", vis.height);
+
+        //Mouseover area
+        vis.svg.append("rect")
+            .attr("width", vis.width)
+            .attr("height", vis.height)
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .on("mouseover", function() { vis.tooltip.style("opacity", 0.4); vis.focusLine.style("opacity", 0.4); })
+            .on("mouseout", function() { vis.tooltip.style("opacity", 0); vis.focusLine.style("opacity", 0); })
+            .on("mousemove", function(event) {
+                let mouse = d3.pointer(event)
+                let mouseX = mouse[0];
+
+                // Get the x mouse position
+                vis.updateTooltip(mouseX, event);
+            });
 
 
         vis.wrangleData();
@@ -240,24 +280,44 @@ class DoubleLineChart {
 
         vis.svg.selectAll(".value1-line, .value2-line")
             .attr("clip-path", "url(#clip)");
-
-        // // Add value1 line
-        // vis.svg
-        //     .append("path")
-        //     // .select("#path-homePrice")
-        //     .data([vis.data.homePrice])
-        //     .attr("class", "line value1-line")
-        //     .attr("d", value1Line)
-        //     .attr("fill", "none")
-        //     .attr("stroke", "var(--midnight-green)");
-        //
-        // // Add value2 line
-        // vis.svg.append("path")
-        //   .data([vis.data.income])
-        //   .attr("class", "line value2-line")
-        //   .attr("d", value2Line)
-        //   .attr("fill", "none")
-        //   .attr("stroke", "var(--rust)");
-
     }
+
+    updateTooltip(mouseX, event) {
+        const vis = this;
+        // Convert mouseX to a date using the inverse of the xScale
+        const x0 = vis.xScale.invert(mouseX);
+
+        // Find the nearest data points for both lines
+        const nearestHomePrice = vis.getNearestDataPoint(vis.data.homePrice, x0);
+        const nearestIncome = vis.getNearestDataPoint(vis.data.income, x0);
+
+
+        let xDate = formatDate(x0);
+
+        let percentIncomeChange = ((nearestIncome.value - vis.data.income[0].value) / vis.data.income[0].value) * 100;
+        let percentHomePriceChange = ((nearestHomePrice.value - vis.data.homePrice[0].value) / vis.data.homePrice[0].value) * 100;
+
+        // Update and show the tooltip
+        vis.tooltip.html("Date: " + xDate +
+            "<br>% Increase in Home Price: " + percentHomePriceChange.toFixed(0) + "% " +
+            "<br>% Increase Income: " + percentIncomeChange.toFixed(0) + "% "
+        )
+            .style("opacity", 1)
+            .style("left", (event.pageX + 30) + "px")
+            .style("top", (event.pageY - 28) + "px");
+
+        // Update and show the vertical line
+        vis.focusLine
+            .attr("x1", vis.xScale(x0))
+            .attr("x2", vis.xScale(x0))
+            .style("opacity", 1);
+    };
+
+    // Helper function to find the nearest data point
+    getNearestDataPoint(data, date) {
+        return data.reduce((prev, curr) => {
+            return (Math.abs(curr.period - date) < Math.abs(prev.period - date) ? curr : prev);
+        });
+    };
+
 }

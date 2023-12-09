@@ -128,7 +128,7 @@ class HistogramRace {
         d3.select("body").append("div")
             .attr("class", "tooltip")
             .attr("id", "histogram-tooltip")
-            .style("opacity", 1);
+            .style("opacity", 0);
 
         self.wrangleData();
     }

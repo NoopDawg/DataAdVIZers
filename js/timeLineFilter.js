@@ -6,7 +6,7 @@ class TimeLineFilter {
         this.brushWidth = 10;
 
         // Define margins and calculate width and height as in file2
-        this.margins = { top: 10, right: 40, bottom: 80, left: 60 };
+        this.margins = { top: 0, right: 40, bottom: 20, left: 20 };
         this.initChart();
         this.updateVisualization();
     }
@@ -17,12 +17,15 @@ class TimeLineFilter {
         self.width = document.getElementById(self.parentElement).getBoundingClientRect().width - self.margins.left - self.margins.right;
         self.height = document.getElementById(self.parentElement).getBoundingClientRect().height - self.margins.top - self.margins.bottom;
 
+        self.plotHeight = self.height + self.margins.top + self.margins.bottom
+        self.plotWidth = self.width + self.margins.left + self.margins.right
         // Create SVG and append it to parent element
         self.svg = d3.select("#" + self.parentElement).append("svg")
             .attr("width", self.width + self.margins.left + self.margins.right)
             .attr("height", self.height + self.margins.top + self.margins.bottom)
             .append("g")
-            .attr("transform", `translate(${self.margins.left}, ${self.margins.top})`);
+            .attr("transform", `translate(${self.margins.left}, ${self.margins.top})`)
+            .attr("class", "plot")
 
         // Initialize scales and axes
         self.maxDate = d3.max(self.data, d => d.Date)
