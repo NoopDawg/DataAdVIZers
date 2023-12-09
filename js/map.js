@@ -43,15 +43,20 @@ class MapVis {
             .range([self.minColor, self.maxColor]);  // Colors for housing prices
 
 
+        console.log(self.statesGeoJSON);
         self.svg.selectAll("path")
             .data(self.statesGeoJSON.features)
             .enter()
             .append("path")
             .attr("d", self.path)
+            .attr("id", function(d) {
+                return d.properties.name;
+            })
             .style("fill", "white")
             .style("stroke", "black")
             .style("stroke-width", 0.5)
-            .style("opacity", 0.5)
+            .style("opacity", 0.8)
+
             // function(d) {
             //     var value = sums[d.properties.name];
             //     console.log(value , rangeValue,'range');
@@ -61,7 +66,7 @@ class MapVis {
             //         return "#f7f1deff";  // color for values below the range
             //     }
             // }
-            )
+
     }
 
     updateVis() {
