@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column justify-content-between pt-5">
 		<div class="container">
             <h1>What’s on the market?</h1>
             <h2>Explore the map to see how many homes are available in each state that meet your budget.</h2>
@@ -62,13 +62,18 @@
 					</div>
 				</div>
             </div>
-
-			<div class="page-nav mt-3">
-                <a href="exploreData.html" class="button">Go Back</a>
-            </div>
 		</div>
 
-
+		<div class="footer mt-4">
+            <div class="container d-flex justify-content-between">
+                <div id="nav_circles" class="d-flex gap-3 align-items-center">
+                    <div class="rounded-circle"></div>
+                    <div class="rounded-circle"></div>
+                    <div class="rounded-circle active"></div>
+                </div>
+				<a href="exploreData.html" id="backBtn" class="button"><img src="css/arrow-left-solid.svg" alt="Left Arrow"></a>
+            </div>
+        </div>
 	<!-- embedding JS libraries -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 
