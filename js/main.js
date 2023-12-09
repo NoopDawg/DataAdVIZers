@@ -2,7 +2,7 @@
 let parseQuarterDate = d3.timeParse("%Y-%m");
 let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
-let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter
+let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter;
 
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
@@ -90,16 +90,6 @@ function createVisualizations(data) {
         }
     }
 
-    //
-    // CREATING VIZ BASED ON CURRENT PAGE
-    //
-    function getLastPartOfPath() {
-        var pathArray = window.location.pathname.split('/');
-        return pathArray[pathArray.length - 1];
-    }
-    const currentPath = getLastPartOfPath();
-    console.log(currentPath);
-
     //filter timeline data
     michaelData = michaelData.filter(function (d) {
         return d.Date >= parseDateYear("01/01/2002");
@@ -115,6 +105,15 @@ function createVisualizations(data) {
     console.log(michaelData)
     console.log(homePricesUnits)
 
+    //
+    // CREATING VIZ BASED ON CURRENT PAGE
+    //
+    function getLastPartOfPath() {
+        var pathArray = window.location.pathname.split('/');
+        return pathArray[pathArray.length - 1];
+    }
+    const currentPath = getLastPartOfPath();
+    // console.log(currentPath);
     // INIT VIZ BASED ON CURRENT PAGE
     if (currentPath === 'exploreData.html') {
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);

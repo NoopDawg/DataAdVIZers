@@ -24,7 +24,7 @@ body{
     background-color: var(--prussian-blue);
     color: var(--eggshell);
     font-family: 'Proza Libre', sans-serif; 
-    text-align: center;
+    text-align: left;
     font-size: 1.25rem;
     display: flex;
     align-items: center;
@@ -79,6 +79,22 @@ h2{
     color: var(--auburn);
 }
 
+.footer{
+    width: 100%;
+    background-color: var(--midnight-green);
+    padding: 1rem 0;
+}
+
+.rounded-circle{
+    background-color: var(--eggshell);
+    width: 1rem;
+    height: 1rem;
+} 
+
+.active{
+    background-color: var(--tiffany-blue);
+}
+
 /* INDEX PAGE */
 
 .fade-in {
@@ -101,15 +117,41 @@ h2{
     font-family: 'Proza Libre', sans-serif;
     font-size: 1rem;
 }
+
 .axis { 
     color: var(--prussian-blue);
     font-family: 'Proza Libre', sans-serif;
     font-size: 13px;
 }
 
-.axis-label {
-
+.subtext{
+    text-align:left;
+    font-size: 0.75rem;
+    font-style: italic;
 }
+
+.chart-title{
+    margin-bottom: 0px;
+    color: var(--midnight-green);
+}
+
+.orange{
+    color: var(--alloy-orange);
+}
+
+.red{
+    color: var(--auburn);
+}
+
+.skinny-container{
+    max-width: 50vw;
+}
+
+.x-axis-label{
+    font-size: 1rem;
+    color: var(--midnight-green);
+}
+
 /* EXPLORE PAGE  */
 
 /* #histogramRace {

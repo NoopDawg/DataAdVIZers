@@ -12,31 +12,63 @@
 
 	</head>
 
-	<body>
-		<div class="container">
-            <div id="sub-container" class="d-flex flex-wrap gap-4 justify-content-center">
-                <div id="introText" class="white-txt d-flex flex-column gap-4 text-center justify-content-center">
-                    <div>If you’re one of the older members of GenZ, you’re probably thinking about buying a home and looking into what it takes. </div>
-                    <div class="fade-in fade-in-text" id="block2">Unfortunately, <b>it's not your mothers housing market.</b></div>
-                    <div class="fade-in fade-in-text" id="block3">Since 1960, the median household income has increased by</br><span class="highlight">39%</span></div>
-                    <div class="fade-in fade-in-text" id="block4">while housing prices have increased by </br><span class="highlight">129%</span></div>
-					<div class="page-nav fade-in mt-3">
-						<a href="exploreData.html" class="button">Learn More</a>
-					</div>
+	<body class="d-flex flex-column justify-content-between pt-5">
+        
+        <div class="skinny-container">
+            <div class="row mb-3">
+                <div id="block1">
+                    <p>If you’re one of the older members of GenZ, you’re probably starting to think about buying a home for the first time.</p>
+                    <p class="fade-in">After doing some research, you may have panicked at the current prices, asking yourself,</p>
+                    <div class="d-inline">
+                        <p class="fade-in">“Is this possible for me?”</p>
+                        <p class="fade-in">“How did my parents do this?”</p>
+                    </div>
                 </div>
-
-                <div id="bar-graph" class="fade-in modular_block"></div>
             </div>
-		</div>
+            <div class="row fade-in mb-4">
+                <div id="block2" class="modular_block text-center">
+                    <p class="chart-title pt-2">GenZ's expectations for <span class="orange">housing price</span> and <span class="red">annual income</span>.</p>
+                    <div id="block2-graph"></div>
+                </div>
+				<div class="subtext d-flex justify-content-between mt-1">
+					<p>GenerationZ is anyone born between 1997 - 2012.</p>
+					<p>People of this generation are now 12 - 26 years old.</p>
+				</div>
+            </div>
+            <div class="row mb-3">
+                <div id="block3">
+                    <p class="fade-in">Since 1997, the year of the eldest GenZs, the average salary has gone up 133%</p>
+                    <p class="fade-in">But the average home price has risen 162%</p>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div id="block4" class="fade-in modular_block text-center">
+                    <p class="chart-title pt-2">Today's median <span class="orange">housing price</span> and <span class="red">annual income</span>.</p>
+                    <div id="block4-graph"></div>
+                </div>
+            </div>
+        </div>
 
-	<!-- embedding JS libraries -->
+        <div class="footer mt-4">
+            <div class="container d-flex justify-content-between">
+                <div id="nav_circles" class="d-flex gap-3 align-items-center">
+                    <div class="rounded-circle active"></div>
+                    <div class="rounded-circle"></div>
+                    <div class="rounded-circle"></div>
+                </div>
+                <a href="exploreData.html" class="button"><img src="css/arrow-right-solid.svg" alt="Right Arrow"></a>
+            </div>
+        </div>
+
+	
+    <!-- embedding JS libraries -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 
 	<!-- d3 -->
 	<script src="https://d3js.org/d3.v7.min.js"></script>
 
 	<!-- own js files -->
-	<script src="js/introText.js"></script>
-    <script src="js/simpleBarGraph.js"></script>
+	<script src="js/simpleBarGraph.js"></script>
+	<script src="js/firstPage.js"></script>
 	</body>
 </html>
