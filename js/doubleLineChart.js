@@ -8,6 +8,12 @@ class DoubleLineChart {
         this.data.income.sort((a, b) => new Date(a.period) - new Date(b.period));
         this.data.homePrice.sort((a, b) => new Date(a.period) - new Date(b.period));
 
+        this.data.income.forEach(d => {
+            d.pct_change = ((d.value - this.data.income[0].value) / this.data.income[0].value) * 100;
+        })
+        this.data.homePrice.forEach(d => {
+            d.pct_change = ((d.value - this.data.homePrice[0].value) / this.data.homePrice[0].value) * 100;
+        })
 
         // Combine the arrays
         this.combinedArray = [...data.homePrice, ...data.income];
@@ -17,8 +23,6 @@ class DoubleLineChart {
         this.dateMax = new Date(d3.max(this.combinedArray, d => d.period));
         this.dateMin = new Date(d3.min(this.combinedArray, d => d.period));
 
-        this.referenceHomePrice = this.data.homePrice[0].value
-        this.referenceIncome = this.data.income[0].value
 
 
         this.initVis();
@@ -28,7 +32,7 @@ class DoubleLineChart {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 20, right: 40, bottom: 85, left: 72 };
+        vis.margin = { top: 20, right: 40, bottom: 85, left: 50 };
         vis.width = document.querySelector(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.querySelector(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -93,11 +97,11 @@ class DoubleLineChart {
         vis.svg.append("text")
             .attr("class", "axis")
             .attr("transform", "rotate(-90)")
-            .attr("y", 0 - 75)
+            .attr("y", 0 - 50)
             .attr("x", 0 - (vis.height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
-            .text("Value ($)");
+            .text("Percent Change (%)");
 
         // Add legend
         vis.svg.append("text")
@@ -194,9 +198,9 @@ class DoubleLineChart {
             .map(d => d.period);
         vis.homePrices = vis.data.homePrice
             .filter(d => d.period <= vis.dateMax)
-            .map(d => d.value);
+            .map(d => d.pct_change);
         vis.incomes = vis.data.income.filter(d => d.period <= vis.dateMax)
-            .map(d => d.value);
+            .map(d => d.pct_change);
 
         vis.updateVis();
     }
@@ -242,18 +246,18 @@ class DoubleLineChart {
         // Define line functions
         let value1Line = d3.line()
           .x(d => vis.xScale(d.period))
-          .y(d => vis.yScale(d.value));
+          .y(d => vis.yScale(d.pct_change));
     
         let value2Line = d3.line()
           .x(d => vis.xScale(d.period))
-          .y(d => vis.yScale(d.value));
+          .y(d => vis.yScale(d.pct_change));
 
 
         // Select and update the first line, or create it if it doesn't exist
         vis.svg.selectAll(".value1-line")
             .data([
                 vis.data.homePrice.filter(d => {  // Filter out any data points that are outside the y-axis scale
-                    return (vis.yScale(d.value) >=0)
+                    return (vis.yScale(d.pct_change) >=0)
                 })
             ])
             .join(
