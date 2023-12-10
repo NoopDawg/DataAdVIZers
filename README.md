@@ -14,12 +14,12 @@ To run this site locally, follow these simple steps:
 
 Clone this repository to your local machine:
 ```
-git clone https://github.com/your-username/CSCI-171-Final-Project.git
+git clone https://github.com/your-username/DataAdVIZers.git
 ```
 
 Navigate to the project directory:
 ```
-cd CSCI-171-Final-Project
+cd DataAdVIZers
 ```
 
 Run a local HTTP server using Python:
