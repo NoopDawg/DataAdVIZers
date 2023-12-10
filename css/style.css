@@ -143,6 +143,10 @@ h2{
     color: var(--auburn);
 }
 
+.blue{
+    color: var(--tiffany-blue);
+}
+
 .skinny-container{
     max-width: 50vw;
 }
