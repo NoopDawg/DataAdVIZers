@@ -231,6 +231,10 @@ h2{
 #mortgage-calc{
     text-align: left;
 }
+#mortgage-calc>label{
+    color: var(--prussian-blue);
+}
+
 .maptooltip {
     position: absolute;
     text-align: center;
