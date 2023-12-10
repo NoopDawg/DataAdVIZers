@@ -27,7 +27,8 @@ class MapVis {
 
         this.minColor = "#94d2bdff";
         this.maxColor = "#ca6702ff";
-
+        this.barHeightMax = 200
+        this.barWidth = 10
 
         //when projection calculation didn't match perfectly, manual adjustments were made here
         this.state_adjustments = {
@@ -175,7 +176,7 @@ class MapVis {
         self.lineXScale = d3.scaleLinear().range([0, self.maxWidth]).domain(d3.extent(self.incomeData, d => d.date))
         self.lineYScale = d3.scaleLinear().range([0, self.maxHeight]).domain([0, maxPct_change])
 
-        self.barHeightMax = 200
+
 
         self.barYScale = d3.scaleLinear().range([0, self.barHeightMax]).domain(
             [
@@ -183,6 +184,14 @@ class MapVis {
                 d3.max(self.current_listing_prices, d => d.median_listing_price)
             ]
         )
+
+        self.addSpikes()
+        self.addSpikeLegend()
+        self.addLegend()
+    }
+
+    addSpikes() {
+        const self = this;
 
         let context = self.canvas.node().getContext('2d');
         context.clearRect(0, 0, self.width, self.height);
@@ -202,8 +211,86 @@ class MapVis {
             //Bar Graph
             self.drawBarForState(position, barHeight, context)
         })
+    }
 
-        self.addLegend()
+    addSpikeLegend() {
+        const self = this;
+
+        let lineStyle = 'rgba(0,0,0,0.7)';
+
+        self.legend_margin = { top: 60, right: 10, bottom: 20, left: 10 }; //nothing needed
+        self.spikeLegendWidth = (self.barWidth + self.legend_margin.left + self.legend_margin.right + 50) * 2
+        self.spikeLegendHeight = (self.barHeightMax + self.legend_margin.top + self.legend_margin.bottom)
+        self.spikeLegend = d3.select("#spike-legend-canvas")
+            .attr("width", self.spikeLegendWidth)
+            .attr("height",self.spikeLegendHeight)
+            .attr("class", "plot-canvas")
+
+
+        let context = self.spikeLegend.node().getContext('2d');
+
+        //make white background
+        context.clearRect(0, 0, self.spikeLegendWidth, self.spikeLegendHeight);
+        context.fillStyle = "rgba(255, 255, 255, 0.8)";
+        context.fillRect(0, 0, self.spikeLegendWidth, self.spikeLegendHeight);
+
+
+        //minimum bar
+        let minMedianPrice = d3.min(self.current_listing_prices, d => d.median_listing_price)
+        let minBarHeight = self.barYScale(minMedianPrice)
+
+        let minBarX = 50;
+        self.drawBarForState({x: minBarX, y: self.spikeLegendHeight - 30}, minBarHeight, context, false)
+
+        context.setLineDash([5, 5]); // Sets the dash pattern for the line [dash length, gap length]
+        context.beginPath();
+        let minDottedLineY = self.spikeLegendHeight - 30 - minBarHeight;
+        context.moveTo(self.legend_margin.left, minDottedLineY);
+        context.lineTo(self.spikeLegendWidth - self.legend_margin.right, minDottedLineY);
+        context.strokeStyle = lineStyle; // Set the color of the dotted line
+        context.stroke();
+        context.setLineDash([]);
+
+        // Label for the first spike
+        context.fillStyle = "#000000"; // Black color for the text
+        context.textAlign= "center";
+        context.fillText("Min Price", minBarX, self.spikeLegendHeight - 10);
+
+
+        //maximum bar
+        let maxMedianPrice = d3.max(self.current_listing_prices, d => d.median_listing_price)
+        let barHeightMax = self.barYScale(maxMedianPrice)
+
+        let maxBarX = minBarX + 50;
+        self.drawBarForState({x: maxBarX, y: self.spikeLegendHeight - 30}, barHeightMax, context, false)
+        context.fillStyle = "#000000";
+
+        // Label for the second spike
+        context.fillText("Max Price", maxBarX, self.spikeLegendHeight - 10);
+
+        context.setLineDash([5, 5]); // Sets the dash pattern for the line [dash length, gap length]
+        context.beginPath();
+        let maxDottedLineY = self.spikeLegendHeight - 30 - barHeightMax;
+        context.moveTo(self.legend_margin.left, maxDottedLineY);
+        context.lineTo(self.spikeLegendWidth - self.legend_margin.right, maxDottedLineY);
+        context.strokeStyle = lineStyle; // Set the color of the dotted line
+        context.stroke();
+        context.setLineDash([]);
+
+
+        context.textAlign= "left";
+        context.fillText(minMedianPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }),
+            self.legend_margin.left, minDottedLineY - 8);
+
+        context.fillText(maxMedianPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0}),
+            self.legend_margin.left, maxDottedLineY - 8);
+
+
+        context.textAlign= "center";
+        context.font = "14px sans-serif";
+        context.fillText("2023 Median Price", self.spikeLegendWidth/2, 16 );
+
+
     }
 
     addLegend(){
@@ -300,12 +387,18 @@ class MapVis {
     }
 
 
-    drawBarForState(stateCentroid, barHeight, context) {
+    drawBarForState(location, barHeight, context, apply_perspective = true){
         const self = this;
-        let point = self.apply_perspective(stateCentroid)
+        let point;
+        if (apply_perspective) {
+            point = self.apply_perspective(location)
+        } else {
+            point = location
+        }
+
         const baseX = point.x;
         const baseY = point.y;
-        const barWidth = 10; // Set the width of the bar
+        const barWidth = self.barWidth; // Set the width of the bar
         const radius = 5
 
         // Apply perspective calculations here
@@ -314,12 +407,10 @@ class MapVis {
         const topY = baseY - barHeight; // Assuming no perspective for simplicity
 
 
-        let blx, bly,
-            brx, bry,
-            tlx, tly,
-            trx, tryy
-        blx = baseX - barWidth / 2;
+        let blx, brx,
+            tlx, trx
 
+        blx = baseX - barWidth / 2;
         brx = baseX + barWidth / 2;
         tlx = topX - barWidth / 2;
         trx = topX + barWidth / 2;
@@ -340,6 +431,11 @@ class MapVis {
         context.strokeStyle = 'rgba(0,89,157,0.79)'; // Set the color of the bar
         context.strokeOpacity = 1;
         context.stroke();
+        context.fillStyle = "#000000";
+    }
+
+    drawSpike() {
+
     }
 
     apply_perspective(point) {
