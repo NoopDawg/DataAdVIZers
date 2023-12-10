@@ -56,7 +56,7 @@ h2{
     background-color: rgba(255, 253, 248, 0.9);
     border-radius: 1rem;
     padding: 1rem;
-    min-height: 30vh;
+    /* min-height: 30vh; */
 }
 
 .page-nav{
@@ -95,6 +95,10 @@ h2{
 
 .active{
     background-color: var(--tiffany-blue);
+}
+
+#block2-graph, #block4-graph{
+    height: 300px;
 }
 
 /* INDEX PAGE */
@@ -152,6 +156,12 @@ h2{
 .skinny-container{
     max-width: 50vw;
 }
+@media (max-width: 768px) {
+    .skinny-container{
+        max-width: 75vw;
+    }
+}
+  
 
 .x-axis-label{
     font-size: 1rem;

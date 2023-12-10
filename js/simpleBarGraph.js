@@ -25,9 +25,9 @@ class SimpleBarGraph {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 10, right: 10, bottom: 20, left: 10 };
-        vis.width = 550 - vis.margin.left - vis.margin.right;
-        vis.height = 200 - vis.margin.top - vis.margin.bottom;
+        vis.margin = { top: 10, right: 10, bottom: 50, left: 10 };
+        vis.width = document.querySelector(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
+        vis.height = document.querySelector(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
         // Append the SVG to the parent element
         vis.svg = d3.select(vis.parentElement)
