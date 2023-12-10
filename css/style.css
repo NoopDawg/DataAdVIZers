@@ -208,6 +208,14 @@ h2{
     color: var(--prussian-blue);
     font-family: 'Proza Libre', sans-serif;
 }
+#timeline .tick{
+    font-size: 1.25rem;
+}
+
+#currentYear{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 
 /* SOLUTION PAGE */
 #main-content{

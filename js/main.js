@@ -119,10 +119,10 @@ function createVisualizations(data) {
         };
 
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
-        timeLineFilter = new TimeLineFilter("michael", timeLineData, eventHandler);
+        timeLineFilter = new TimeLineFilter("timeline", timeLineData, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
 
-        // autoPlayViz();
+        autoPlayViz();
 
         replayButton();
 
@@ -142,7 +142,7 @@ function createVisualizations(data) {
         });
         setTimeout(function() {
             buttonChildren[1].innerHTML = "Learn what it takes to get a home today <img src=\"css/arrow-right-solid.svg\" alt=\"Right Arrow\">";
-        }, 10000);
+        }, 9000);
     }
     if(currentPath === 'currentMarket.html') {
         const mapData = {

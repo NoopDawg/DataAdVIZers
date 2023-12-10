@@ -113,7 +113,7 @@ class HistogramRace {
             .attr("x", self.width / 2)
             .attr("y",  self.margins.top / 2)
             .attr("text-anchor", "middle")
-            .text("Percentage of Homes Sold by Price Band in " + self.selectedDate.getFullYear() + "-" + (self.selectedDate.getMonth() + 1))
+            .text("Percentage of Homes Sold by Price Band in " + self.selectedDate.getFullYear());
 
         //Tooltip
         d3.select("body").append("div")
@@ -128,13 +128,13 @@ class HistogramRace {
         const self = this;
         let currentIndex = 0;
 
-        console.log(self.dateOptions.length);
         function updateChart() {
             if (currentIndex < self.dateOptions.length) {
             // if (currentIndex < 2) {
                 self.selectedDate = self.dateOptions[currentIndex];
 
                 self.eventHandler.trigger("autoMoveBrush", self.selectedDate);
+                document.getElementById("currentYear").textContent = self.selectedDate.getFullYear().toString();
 
                 self.wrangleData();
                 self.updateVis();
@@ -150,6 +150,7 @@ class HistogramRace {
     onSelectionChange(date) {
         const self = this;
         self.selectedDate = date;
+        document.getElementById("currentYear").textContent = self.selectedDate.getFullYear().toString();
         self.wrangleData();
     }
 
@@ -183,7 +184,7 @@ class HistogramRace {
         const self = this;
 
         self.svg.select("#histogram-title")
-            .text("Percentage of Homes Sold by Price Band in " + formatDate(self.selectedDate))
+            .text("Percentage of Homes Sold by Price Band in " + self.selectedDate.getFullYear().toString())
 
         const bars =  self.svg.selectAll("rect.bar")
             .data(self.displayData, d => d.price_band)

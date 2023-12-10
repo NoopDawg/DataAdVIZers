@@ -3,10 +3,10 @@ class TimeLineFilter {
         this.parentElement = _parentElement;
         this.data = _data;
         this.eventHandler = _eventHandler; // This can be used for handling custom events
-        this.brushWidth = 10;
+        this.brushWidth = (document.getElementById(this.parentElement).getBoundingClientRect().width)/20;
 
         // Define margins and calculate width and height as in file2
-        this.margins = { top: 0, right: 40, bottom: 20, left: 20 };
+        this.margins = { top: 0, right: 20, bottom: 45, left: 20 };
         this.initChart();
         this.updateVisualization();
     }
@@ -107,7 +107,7 @@ class TimeLineFilter {
         }
 
         self.brush = d3.brushX()
-            .extent([[0, 0], [self.width, self.height]])
+            .extent([[0, 0], [self.width, self.height + 15]])
             .on("start brush end", brushed);
 
 
