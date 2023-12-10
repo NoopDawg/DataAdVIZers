@@ -4,7 +4,7 @@ let formatQuarterDate = d3.timeFormat("%Y-%m");
 let parseDateYear = d3.timeParse("%m/%d/%Y");
 let formatDate = d3.timeFormat("%YQ%q");
 
-let histogramRace, lineChartBrush, doubleLinecChart, timeLineFilter, mapVis
+let histogramRace, lineChartBrush, doubleLineChart, timeLineFilter, mapVis, mapDoubleLine
 
 let promises = [
     d3.csv("data/quarterlyHomePricePercentages_melted.csv", function(d) {
@@ -130,7 +130,7 @@ function createVisualizations(data) {
 
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
         timeLineFilter = new TimeLineFilter("timeline", timeLineData, eventHandler);
-        doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
+        doubleLineChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
 
         autoPlayViz();
 
@@ -156,6 +156,17 @@ function createVisualizations(data) {
         }, 9000);
     }
     if(currentPath === 'currentMarket.html') {
+
+        incomeData.sort((a, b) => a.year - b.year)
+        stateHpiData.sort((a, b) => (a.year + (0.1 * a.quarter)) - (b.year + (0.1 * b.quarter)))
+
+        incomeData.forEach(d => {
+            d.pct_change = (d.avg_annual_pay - incomeData[0].avg_annual_pay) * 100 / incomeData[0].avg_annual_pay
+        })
+        stateHpiData.forEach(d => {
+            d.pct_change = (d.index_sa - stateHpiData[0].index_sa) * 100 / stateHpiData[0].index_sa
+        })
+
         const mapData = {
             incomeData: incomeData.filter(d => d.area_type === "State"),
             stateHpiData: stateHpiData,
@@ -164,6 +175,7 @@ function createVisualizations(data) {
 
         mapVis = new MapVis("map", statesGeoJSON, countiesGeoJSON, mapData, eventHandler);
 
+        mapDoubleLine = new mapDoubleLineChart("#mapDoubleLineChart", mapData);
         // adding listeners for source button
         sourcesButton();
 
@@ -180,14 +192,14 @@ function createVisualizations(data) {
     eventHandler.bind("selectionChanged", function(event){
         let newDate = event.detail;
         histogramRace.onSelectionChange(newDate);
-        doubleLinecChart.filterDate(newDate);
+        doubleLineChart.filterDate(newDate);
     });
 
     eventHandler.bind("autoMoveBrush", function(event){
         let newDate = event.detail;
         //lineChartBrush.moveBrush(newDate);
         timeLineFilter.moveBrush(newDate);
-        doubleLinecChart.filterDate(newDate);
+        doubleLineChart.filterDate(newDate);
     })
 }
 

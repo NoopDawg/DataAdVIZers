@@ -254,6 +254,11 @@ h2{
     transform-origin: bottom;
 }
 
+#mapDoubleLineChart {
+    height: 30vh;
+
+}
+
 
 /*#line-graph-canvas {*/
 /*    transform: perspective(800px) rotateX(55deg);*/

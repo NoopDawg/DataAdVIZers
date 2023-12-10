@@ -11,15 +11,6 @@ class MapVis {
         this.incomeData = mapData.incomeData;
         this.stateHpiData = mapData.stateHpiData;
 
-        this.incomeData.sort((a, b) => a.year - b.year)
-        this.stateHpiData.sort((a, b) => (a.year + (0.1 * a.quarter)) - (b.year + (0.1 * b.quarter)))
-
-        this.incomeData.forEach(d => {
-            d.pct_change = (d.avg_annual_pay - this.incomeData[0].avg_annual_pay) * 100 / this.incomeData[0].avg_annual_pay
-        })
-        this.stateHpiData.forEach(d => {
-            d.pct_change = (d.index_sa - this.stateHpiData[0].index_sa) * 100 / this.stateHpiData[0].index_sa
-        })
 
         this.current_listing_prices = mapData.currentMedianPrices;
 
@@ -199,7 +190,7 @@ class MapVis {
         context.lineTo(brx, baseY);
         context.closePath();
 
-        context.fillStyle = 'rgba(23,143,234,0.61)'; // Set the color of the bar
+        context.fillStyle = 'rgba(23,143,234,0.79)'; // Set the color of the bar
         context.fillOpacity = 1;
         context.fill();
         //
@@ -277,8 +268,6 @@ class MapVis {
         // Start the path
         context.beginPath();
 
-
-
         // Draw the first line
         stateDataIncome.forEach((point, index) => {
             let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2;
@@ -320,8 +309,16 @@ class MapVis {
         context.stroke();
     }
 
+    //sidepanel line graph
+    updateLineGraph(){
+        d3.select("#selection-line-chart").selectAll("svg").remove();
 
-    updateVis() {
+
+        let svg = d3.select("#selection-line-chart").append("svg")
+            .attr("width", 300)
+            .attr("height", 300)
+            .append("g")
+            .attr("transform", "translate(" + 50 + "," + 50 + ")");
 
     }
 
