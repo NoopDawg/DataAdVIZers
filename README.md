@@ -1,5 +1,9 @@
 # CSCI-171 Final Project Repository
 
+## Project Website
+https://anupjonchhe.com/DataAdVIZers/index.html<br>
+<em>please view using chrome, firefox has an issue with a viz on the second page</em>
+
 ## Overview
 Welcome to the CSCI-171 Final Project Repository! 
 This repository contains the code for our final project in the CSCI-171 course. 
