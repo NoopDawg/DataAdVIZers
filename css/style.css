@@ -73,6 +73,8 @@ h2{
     color: var(--midnight-green);
     border-radius: 5px;
     cursor: pointer;
+    border: none;
+    line-height: normal;
 }
 
 .button:hover {
@@ -252,4 +254,47 @@ h2{
     border-radius: 1rem;
     padding: 1rem;
     color: var(--prussian-blue);
+}
+
+#sourcesModal{
+    display: none;
+    justify-content: center;
+    z-index: 99;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.modalDiv{
+    width: 75vw;
+    border-radius: 10px;
+    background-color: var(--eggshell);
+    color: var(--prussian-blue);
+    padding: 1rem;
+    border: 2px solid var(--midnight-green);
+    position: relative;
+}
+
+h3{
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.modalDiv p , .modalDiv a{
+    font-size: 1rem;
+}
+
+.modalDiv button{
+    position: absolute;
+    right: 1rem;
+    border: none;
+    font-weight: bold;
+    color: var(--midnight-green);
+    background-color: var(--tiffany-blue);
+}
+.modalDiv button:hover{
+    color: var(--eggshell);
 }

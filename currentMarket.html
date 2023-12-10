@@ -76,9 +76,27 @@
                     <div class="rounded-circle"></div>
                     <div class="rounded-circle active"></div>
                 </div>
-				<a href="exploreData.html" id="backBtn" class="button"><img src="css/arrow-left-solid.svg" alt="Left Arrow"></a>
+				<div>
+					<a href="exploreData.html" id="backBtn" class="button"><img src="css/arrow-left-solid.svg" alt="Left Arrow"></a>
+					<button id="sourcesBtn" class="button"><img src="css/book-solid.svg" alt="Sources"></button>
+				</div>
             </div>
         </div>
+
+		<!-- Sources Modal -->
+		<div id="sourcesModal">
+			<div class="modalDiv my-3">
+				<button onclick="hideSourcesModal()" class="button">X</button>
+
+				<h3>Group Members</h3>
+				<p>Anup Jonchhe, Micheal Puli, and Alyssa Blanco</p>
+
+				<h3>Sources</h3>
+				<p>Title of link</p>
+				<a href="#">source link</a>
+			</div>
+		</div>
+
 	<!-- embedding JS libraries -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 
