@@ -37,7 +37,12 @@ class mapDoubleLineChart {
 
         // Set up scales
         vis.xScale = d3.scaleTime().range([0, vis.width])
-            .domain(d3.extent(vis.incomeData, d => d.date))
+            .domain(
+                [
+                    d3.max([d3.min(vis.incomeData, d => d.date), d3.min(vis.stateHpiData, d => d.date)]),
+                    d3.min([d3.max(vis.incomeData, d => d.date), d3.max(vis.stateHpiData, d => d.date)])
+                ]
+            )
 
         vis.xAxis = vis.svg.append("g")
             .attr("transform", "translate(0," + vis.height + ")")
@@ -248,8 +253,6 @@ class mapDoubleLineChart {
 
         let xDate = x0.getFullYear().toString();
 
-        console.log(nearestHomePrice)
-        console.log(nearestIncome)
         let percentIncomeChange = nearestIncome.pct_change;
         let percentHomePriceChange = nearestHomePrice.pct_change;
 

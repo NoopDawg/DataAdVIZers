@@ -27,8 +27,63 @@ class MapVis {
         this.minColor = "#94d2bdff";
         this.maxColor = "#ca6702ff";
 
+        this.state_adjustments = {
+            "Alabama": [0, 0],
+            "Alaska": [0, -30],
+            "Arizona": [0, 0],
+            "Arkansas": [0, 0],
+            "California": [0, 0],
+            "Colorado": [0, 0],
+            "Connecticut": [0, 0],
+            "Delaware": [0, 0],
+            "District of Columbia": [0, 0],
+            "Florida": [20, -20],
+            "Georgia": [0, 0],
+            "Hawaii": [0, 0],
+            "Idaho": [0, 0],
+            "Illinois": [0, 0],
+            "Indiana": [0, 0],
+            "Iowa": [0, 0],
+            "Kansas": [0, 0],
+            "Kentucky": [0, 0],
+            "Louisiana": [0, 0],
+            "Maine": [0, 0],
+            "Maryland": [0, 0],
+            "Massachusetts": [0, 0],
+            "Michigan": [0, 0],
+            "Minnesota": [0, 0],
+            "Mississippi": [0, 0],
+            "Missouri": [0, 0],
+            "Montana": [0, 0],
+            "Nebraska": [0, 0],
+            "Nevada": [0, 0],
+            "New Hampshire": [0, 0],
+            "New Jersey": [0, 0],
+            "New Mexico": [0, 0],
+            "New York": [0, 0],
+            "North Carolina": [0, 0],
+            "North Dakota": [0, 0],
+            "Ohio": [0, 0],
+            "Oklahoma": [0, 0],
+            "Oregon": [0, 0],
+            "Pennsylvania": [0, 0],
+            "Rhode Island": [0, 0],
+            "South Carolina": [0, 0],
+            "South Dakota": [0, 0],
+            "Tennessee": [0, 0],
+            "Texas": [0, 0],
+            "Utah": [0, 0],
+            "Vermont": [0, 0],
+            "Virginia": [0, 0],
+            "Washington": [0, 0],
+            "West Virginia": [0, 0],
+            "Wisconsin": [0, 0],
+            "Wyoming": [0, 0]
+        };
+
         this.initVis()
     }
+
 
 
     initVis() {
@@ -53,7 +108,7 @@ class MapVis {
 
         //Map Projection
         self.projection = d3.geoAlbersUsa()
-            .scale(1000)  // Adjust as needed
+            .scale(1500)  // Adjust as needed
             .translate([self.width/2, self.height/2]);  // Adjust as needed
 
         self.path = d3.geoPath().projection(self.projection);
@@ -108,6 +163,7 @@ class MapVis {
             let stateData = self.getStateData(state);
             let position = self.getStatePosition(state);
 
+            position = self.adjustPosition(position, state)
 
             //Line Graph
             // self.drawLineGraph(stateData.hpi, position.x, position.y, context, {strokeStyle: "red", lineWidth: 1});
@@ -142,6 +198,17 @@ class MapVis {
             // Return a default position or handle the error as appropriate
             return { x: 0, y: 0 };
         }
+    }
+
+    adjustPosition(position, stateName) {
+        const self = this;
+        let state_adj = self.state_adjustments[stateName]
+
+        if (state_adj) {
+            position.x += state_adj[0];
+            position.y += state_adj[1];
+        }
+        return position;
     }
 
     rotatePoint(point, angle, origin) {
@@ -202,7 +269,7 @@ class MapVis {
 
     apply_perspective(point) {
         const self = this;
-        let tilt_angle = 15;
+        let tilt_angle = 17;
         let canvas_height = self.height;
         let perspective = 1700;
 
@@ -321,6 +388,7 @@ class MapVis {
             .attr("transform", "translate(" + 50 + "," + 50 + ")");
 
     }
+
 
 
 }
