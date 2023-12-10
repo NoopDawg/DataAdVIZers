@@ -21,6 +21,9 @@ class MapVis {
             d.pct_change = (d.index_sa - this.stateHpiData[0].index_sa) * 100 / this.stateHpiData[0].index_sa
         })
 
+        this.current_listing_prices = mapData.currentMedianPrices;
+
+
         this.maxWidth = 60
         this.maxHeight = 60
 
@@ -88,19 +91,31 @@ class MapVis {
         self.lineXScale = d3.scaleLinear().range([0, self.maxWidth]).domain(d3.extent(self.incomeData, d => d.date))
         self.lineYScale = d3.scaleLinear().range([0, self.maxHeight]).domain([0, maxPct_change])
 
+        self.barHeightMax = 200
+
+        self.barYScale = d3.scaleLinear().range([0, self.barHeightMax]).domain(
+            [
+                d3.min(self.current_listing_prices, d => d.median_listing_price) * 0.5,
+                d3.max(self.current_listing_prices, d => d.median_listing_price)
+            ]
+        )
 
         let context = self.canvas.node().getContext('2d');
         context.clearRect(0, 0, self.width, self.height);
 
         self.states.forEach(state=> {
             let stateData = self.getStateData(state);
-
             let position = self.getStatePosition(state);
 
 
-            self.drawLineGraph(stateData.hpi, position.x, position.y, context, {strokeStyle: "red", lineWidth: 1});
-            self.drawAndFillBetweenLines(stateData.income, stateData.hpi, position.x, position.y, context, {fillStyle: "green", lineWidth: 1})
-            self.drawLineGraph(stateData.income, position.x, position.y, context, {strokeStyle: "blue", lineWidth: 1});
+            //Line Graph
+            // self.drawLineGraph(stateData.hpi, position.x, position.y, context, {strokeStyle: "red", lineWidth: 1});
+            // self.drawAndFillBetweenLines(stateData.income, stateData.hpi, position.x, position.y, context, {fillStyle: "green", lineWidth: 1})
+            // self.drawLineGraph(stateData.income, position.x, position.y, context, {strokeStyle: "blue", lineWidth: 1});
+
+            let barHeight = self.barYScale(stateData.current_listing_prices.median_listing_price)
+            //Bar Graph
+            self.drawBarForState(position, barHeight, context)
         })
 
     }
@@ -109,8 +124,8 @@ class MapVis {
         const self = this;
         let stateIncome = self.incomeData.filter(e => e.state == stateName);
         let stateHpi = self.stateHpiData.filter(e => e.state == stateName);
-
-        return {income: stateIncome, hpi: stateHpi}
+        let stateCurrentMedianPrice = self.current_listing_prices.filter(e => e.state == stateName);
+        return {income: stateIncome, hpi: stateHpi, current_listing_prices: stateCurrentMedianPrice[0]}
     }
 
     getStatePosition(stateName) {
@@ -144,11 +159,51 @@ class MapVis {
         return point;
     }
 
-    apply_perspective(point, tilt_anglef, canvas_hedight, pserspective) {
+    drawBarForState(stateCentroid, barHeight, context) {
         const self = this;
-        let tilt_angle = 15;
+        let point = self.apply_perspective(stateCentroid)
+        const baseX = point.x;
+        const baseY = point.y;
+        const barWidth = 5; // Set the width of the bar
+
+        // Apply perspective calculations here
+        // Calculate top coordinates after applying perspective
+        const topX = baseX;
+        const topY = baseY - barHeight; // Assuming no perspective for simplicity
+
+
+        let blx, bly,
+            brx, bry,
+            tlx, tly,
+            trx, tryy
+        blx = baseX - barWidth / 2;
+
+        brx = baseX + barWidth / 2;
+        tlx = topX - barWidth / 2;
+        trx = topX + barWidth / 2;
+
+        context.beginPath();
+        context.moveTo(blx, baseY);
+        context.lineTo(tlx, topY);
+        context.lineTo(trx, topY);
+        context.lineTo(brx, baseY);
+        context.closePath();
+
+        context.fillStyle = 'rgba(23,143,234,0.61)'; // Set the color of the bar
+        context.fillOpacity = 1;
+        context.fill();
+        //
+        context.lineWidth = 1;
+        context.strokeStyle = 'black'; // Set the color of the bar
+        context.strokeOpacity = 1;
+        context.stroke();
+    }
+
+    apply_perspective(point) {
+        const self = this;
+        let tilt_angle = 12;
         let canvas_height = self.height;
-        let perspective = 1800;
+        let perspective = 1700;
 
         let x = point.x;
         let y = point.y;
@@ -191,8 +246,7 @@ class MapVis {
             // console.log("x: ", x, " y: ", y)
             let xy_point = {x: x, y: y}
             let origin = { x: self.width / 2, y: self.height };
-            xy_point = self.apply_perspective(xy_point, 22, self.height, 1100);
-
+            xy_point = self.apply_perspective(xy_point);
 
             if (index === 0) {
                 context.moveTo(xy_point.x, xy_point.y);
@@ -221,7 +275,7 @@ class MapVis {
             let y = positionY - (self.lineYScale(point.pct_change));
 
             let xy_point = {x: x, y: y}
-            xy_point = self.apply_perspective(xy_point, 22, self.height, 1100);
+            xy_point = self.apply_perspective(xy_point);
 
             if (index === 0) {
                 context.moveTo(xy_point.x, xy_point.y);
@@ -239,7 +293,7 @@ class MapVis {
             let y = positionY - (self.lineYScale(point.pct_change));
 
             let xy_point = {x: x, y: y}
-            xy_point = self.apply_perspective(xy_point, 22, self.height, 1100);
+            xy_point = self.apply_perspective(xy_point);
 
             context.lineTo(xy_point.x, xy_point.y);
         }

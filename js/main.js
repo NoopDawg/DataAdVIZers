@@ -67,6 +67,14 @@ let promises = [
             index_nsa: +d['index_nsa'],
             index_sa: +d['index_sa']
         }
+    }),
+    d3.csv("data/current_state_median_prices.csv", function(d) {
+        return {
+            state: d['state'],
+            state_code: d['state_code'],
+            median_listing_price: +d['median_listing_price'],
+            average_listing_price: +d['average_listing_price']
+        }
     })
 ];
 Promise.all(promises).then(function (data) {
@@ -89,6 +97,8 @@ function createVisualizations(data) {
 
     const incomeData = data[6];
     const stateHpiData = data[7];
+
+    const currentMedianPrices = data[8];
 
     let eventHandler = {
         bind: (eventName, handler) => {
@@ -148,7 +158,8 @@ function createVisualizations(data) {
     if(currentPath === 'currentMarket.html') {
         const mapData = {
             incomeData: incomeData.filter(d => d.area_type === "State"),
-            stateHpiData: stateHpiData
+            stateHpiData: stateHpiData,
+            currentMedianPrices: currentMedianPrices
         }
 
         mapVis = new MapVis("map", statesGeoJSON, countiesGeoJSON, mapData, eventHandler);
