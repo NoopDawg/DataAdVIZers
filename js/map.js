@@ -32,55 +32,55 @@ class MapVis {
         this.maxColor = "#ca6702ff";
 
         this.state_adjustments = {
-            "Alabama": [0, 0],
+            "Alabama": [0, -20],
             "Alaska": [0, -30],
             "Arizona": [0, 0],
             "Arkansas": [0, 0],
             "California": [0, 0],
             "Colorado": [0, 0],
             "Connecticut": [0, 0],
-            "Delaware": [0, 0],
+            "Delaware": [10, -20],
             "District of Columbia": [0, 0],
             "Florida": [20, -20],
             "Georgia": [0, 0],
-            "Hawaii": [0, 0],
+            "Hawaii": [20, 0],
             "Idaho": [0, 0],
             "Illinois": [0, 0],
-            "Indiana": [0, 0],
+            "Indiana": [10, -20],
             "Iowa": [0, 0],
-            "Kansas": [0, 0],
-            "Kentucky": [0, 0],
-            "Louisiana": [0, 0],
-            "Maine": [0, 0],
-            "Maryland": [0, 0],
-            "Massachusetts": [0, 0],
-            "Michigan": [0, 0],
+            "Kansas": [-20, -20],
+            "Kentucky": [0, -30],
+            "Louisiana": [0,-20],
+            "Maine": [20, 20],
+            "Maryland": [10, -20],
+            "Massachusetts": [20, -10],
+            "Michigan": [20, 0],
             "Minnesota": [0, 0],
-            "Mississippi": [0, 0],
+            "Mississippi": [0, -20],
             "Missouri": [0, 0],
             "Montana": [0, 0],
-            "Nebraska": [0, 0],
+            "Nebraska": [30, 0],
             "Nevada": [0, 0],
             "New Hampshire": [0, 0],
-            "New Jersey": [0, 0],
-            "New Mexico": [0, 0],
+            "New Jersey": [10, -10],
+            "New Mexico": [20, -30],
             "New York": [0, 0],
-            "North Carolina": [0, 0],
-            "North Dakota": [0, 0],
+            "North Carolina": [20, -20],
+            "North Dakota": [10, 10],
             "Ohio": [0, 0],
             "Oklahoma": [0, 0],
             "Oregon": [0, 0],
             "Pennsylvania": [0, 0],
-            "Rhode Island": [0, 0],
-            "South Carolina": [0, 0],
-            "South Dakota": [0, 0],
-            "Tennessee": [0, 0],
+            "Rhode Island": [10, -5],
+            "South Carolina": [-10, -30],
+            "South Dakota": [-10, 0],
+            "Tennessee": [-25, -25],
             "Texas": [0, 0],
             "Utah": [0, 0],
             "Vermont": [0, 0],
-            "Virginia": [0, 0],
-            "Washington": [0, 0],
-            "West Virginia": [0, 0],
+            "Virginia": [10, -20],
+            "Washington": [0, 30],
+            "West Virginia": [0, -30],
             "Wisconsin": [0, 0],
             "Wyoming": [0, 0]
         };
@@ -165,10 +165,16 @@ class MapVis {
         context.clearRect(0, 0, self.width, self.height);
 
         self.states.forEach(state=> {
+            console.log(state)
+            if (state == "District of Columbia") { //was too confusing to include, plus no hover ability
+                console.log("DC");
+                return
+            }
             let stateData = self.getStateData(state);
             let position = self.getStatePosition(state);
 
             position = self.adjustPosition(position, state)
+
 
             //Line Graph
             // self.drawLineGraph(stateData.hpi, position.x, position.y, context, {strokeStyle: "red", lineWidth: 1});
