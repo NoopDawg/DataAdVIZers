@@ -119,11 +119,12 @@ function createVisualizations(data) {
         };
 
         histogramRace = new HistogramRace("histogramRace", homePricesPercentages, homePricesUnits, eventHandler);
-        timeLineFilter = new TimeLineFilter("michael", timeLineData, eventHandler);
+        timeLineFilter = new TimeLineFilter("timeline", timeLineData, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
 
-        // autoPlayViz();
+        autoPlayViz();
 
+        // adding listeners for replay animation button
         replayButton();
 
         // explore page nav buttons
@@ -142,7 +143,7 @@ function createVisualizations(data) {
         });
         setTimeout(function() {
             buttonChildren[1].innerHTML = "Learn what it takes to get a home today <img src=\"css/arrow-right-solid.svg\" alt=\"Right Arrow\">";
-        }, 10000);
+        }, 9000);
     }
     if(currentPath === 'currentMarket.html') {
         const mapData = {
@@ -151,7 +152,9 @@ function createVisualizations(data) {
         }
 
         mapVis = new MapVis("map", statesGeoJSON, countiesGeoJSON, mapData, eventHandler);
-        // map vis called here?
+
+        // adding listeners for source button
+        sourcesButton();
 
         // footer button
         const backBtn = document.getElementById('backBtn');
@@ -238,6 +241,37 @@ function replayButton(){
     button.addEventListener("mouseout", function() {
         button.innerHTML = originalContent;
     });
+}
+
+function sourcesButton(){
+    // Get the button element
+    var button = document.getElementById("sourcesBtn");
+
+    // Store the original HTML content
+    var originalContent = button.innerHTML;
+
+    // Change content on hover
+    button.addEventListener("mouseover", function() {
+        // Replace the content with the desired text or HTML
+        button.innerHTML = originalContent + " Sources";
+    });
+
+    button.addEventListener("click", function() {
+        showSourcesModal();
+    });
+
+    // Restore content when not hovering
+    button.addEventListener("mouseout", function() {
+        button.innerHTML = originalContent;
+    });
+}
+
+function showSourcesModal() {
+    console.log("here")
+    document.getElementById('sourcesModal').style.display = 'flex';
+}
+function hideSourcesModal() {
+    document.getElementById('sourcesModal').style.display = 'none';
 }
 
 function calculatePayment() {
