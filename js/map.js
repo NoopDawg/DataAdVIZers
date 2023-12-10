@@ -268,6 +268,7 @@ class MapVis {
         const baseX = point.x;
         const baseY = point.y;
         const barWidth = 10; // Set the width of the bar
+        const radius = 5
 
         // Apply perspective calculations here
         // Calculate top coordinates after applying perspective
@@ -290,6 +291,7 @@ class MapVis {
         context.lineTo((tlx + trx) /2, topY);
         // context.lineTo(trx, topY);
         context.lineTo(brx, baseY);
+        context.arc(baseX, baseY, radius, 0, Math.PI, false);
         context.closePath();
 
         context.fillStyle = 'rgba(23,143,234,0.79)'; // Set the color of the bar
