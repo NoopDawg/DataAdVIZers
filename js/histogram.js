@@ -42,7 +42,7 @@ class HistogramRace {
         const self = this;
         let combinedData = [];
         percentageData.forEach(d => {
-            let units = unitsData.filter(e => ((e.date.getTime() - d.date.getTime()) < 1) && e.price_band == d.price_band)[0];
+            let units = unitsData.filter(e => (Math.abs(e.date.getTime() - d.date.getTime()) < 1) && e.price_band == d.price_band)[0];
             combinedData.push({
                 date: d.date,
                 price_band: d.price_band,

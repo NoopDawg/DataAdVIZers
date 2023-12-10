@@ -1,12 +1,10 @@
 class MapVis {
     constructor(_parentElement,
                 statesGeoJSON,
-                countyGeoJSON,
                 mapData,
                 _eventHandler) {
         this.parentElement = _parentElement;
         this.statesGeoJSON = statesGeoJSON
-        this.countyGeoJSON = countyGeoJSON;
         this.data = mapData;
         this.incomeData = mapData.incomeData;
         this.stateHpiData = mapData.stateHpiData;
@@ -30,6 +28,8 @@ class MapVis {
         this.minColor = "#94d2bdff";
         this.maxColor = "#ca6702ff";
 
+
+        //when projection calculation didn't match perfectly, manual adjustments were made here
         this.state_adjustments = {
             "Alabama": [0, -20],
             "Alaska": [0, -30],
@@ -117,7 +117,6 @@ class MapVis {
         self.path = d3.geoPath().projection(self.projection);
 
 
-
         self.final_pct_diffs = self.states.map(stateName => self.getStateFinalPctChangeDifference(stateName)).filter(d => d != null);
         console.log(self.final_pct_diffs)
         //color scale
@@ -202,11 +201,6 @@ class MapVis {
 
             position = self.adjustPosition(position, state)
 
-
-            //Line Graph
-            // self.drawLineGraph(stateData.hpi, position.x, position.y, context, {strokeStyle: "red", lineWidth: 1});
-            // self.drawAndFillBetweenLines(stateData.income, stateData.hpi, position.x, position.y, context, {fillStyle: "green", lineWidth: 1})
-            // self.drawLineGraph(stateData.income, position.x, position.y, context, {strokeStyle: "blue", lineWidth: 1});
 
             let barHeight = self.barYScale(stateData.current_listing_prices.median_listing_price)
             //Bar Graph
@@ -293,10 +287,16 @@ class MapVis {
         }
         let stateHpiFinal = stateHpi[stateHpi.length - 1].pct_change;
         let stateIncomeFinal = stateIncome[stateIncome.length - 1].pct_change;
-        return stateHpiFinal - stateIncomeFinal;
+        return stateHpiFinal;
 
     }
 
+    /**
+     * Manually adjust the position of the state label
+     * @param position
+     * @param stateName
+     * @returns {*}
+     */
     adjustPosition(position, stateName) {
         const self = this;
         let state_adj = self.state_adjustments[stateName]
@@ -308,21 +308,6 @@ class MapVis {
         return position;
     }
 
-    rotatePoint(point, angle, origin) {
-        let radians = angle * Math.PI / 180;
-        let sin = Math.sin(radians);
-        let cos = Math.cos(radians);
-        // Translate point to origin
-        point.x -= origin.x;
-        point.y -= origin.y;
-        // Rotate point
-        let xNew = point.x * cos - point.y * sin;
-        let yNew = point.x * sin + point.y * cos;
-        // Translate point back
-        point.x = xNew + origin.x;
-        point.y = yNew + origin.y;
-        return point;
-    }
 
     drawBarForState(stateCentroid, barHeight, context) {
         const self = this;
@@ -387,105 +372,6 @@ class MapVis {
         let transformed_y = apparent_y + (canvas_height * Math.sin(tilt_radians))
 
         return {x: transformed_x, y: transformed_y}
-    }
-
-// Now use rotatedPoint.x and rotatedPoint.y for drawing on the canvas
-
-
-    // Function to draw a line graph for a state
-    drawLineGraph(stateData, positionX, positionY, context, config) {
-        const self = this;
-        let maxWidth = 30
-        let maxHeight = 30
-        let xScale = d3.scaleLinear().range([0, maxWidth]).domain(d3.extent(stateData, d => d.date))
-        let yScale = d3.scaleLinear().range([0, maxHeight]).domain(d3.extent(stateData, d => d.pct_change))
-
-        // console.log("x: ", positionX, " y: ", positionY)
-        let xscale = 1
-        let yscale = 10
-        context.beginPath();
-        stateData.forEach((point, index) => {
-            // console.log(point)
-            // Calculate x and y based on your data and position
-            let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2; // scale is how much you scale your data point
-            let y = positionY - (self.lineYScale(point.pct_change));// point.value is the data value
-
-            // console.log("x: ", x, " y: ", y)
-            let xy_point = {x: x, y: y}
-            let origin = { x: self.width / 2, y: self.height };
-            xy_point = self.apply_perspective(xy_point);
-
-            if (index === 0) {
-                context.moveTo(xy_point.x, xy_point.y);
-            } else {
-                context.lineTo(xy_point.x, xy_point.y);
-            }
-        });
-
-        context.strokeStyle = config.strokeStyle; // Set the color of the line
-        context.lineWidth = config.lineWidth; // Set the width of the line
-        context.stroke();
-    }
-
-    // Function to draw and fill the area between two line graphs
-    drawAndFillBetweenLines(stateDataIncome, stateDataHPI, positionX, positionY, context, config) {
-        const self = this;
-
-        // Start the path
-        context.beginPath();
-
-        // Draw the first line
-        stateDataIncome.forEach((point, index) => {
-            let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2;
-            let y = positionY - (self.lineYScale(point.pct_change));
-
-            let xy_point = {x: x, y: y}
-            xy_point = self.apply_perspective(xy_point);
-
-            if (index === 0) {
-                context.moveTo(xy_point.x, xy_point.y);
-            } else {
-                context.lineTo(xy_point.x, xy_point.y);
-            }
-        });
-
-
-
-        // Draw the second line in reverse
-        for (let i = stateDataHPI.length - 1; i >= 0; i--) {
-            let point = stateDataHPI[i];
-            let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2;
-            let y = positionY - (self.lineYScale(point.pct_change));
-
-            let xy_point = {x: x, y: y}
-            xy_point = self.apply_perspective(xy_point);
-
-            context.lineTo(xy_point.x, xy_point.y);
-        }
-
-        // Close the path and fill
-        context.closePath();
-        context.fillStyle = 'rgba(255,0,0,0.38)'; // Set the fill color
-        context.fillOpacity = 0.2
-        context.fill();
-
-        // Optional: If you also want to draw the lines
-        context.lineWidth = config.lineWidth; // Set the width of the line
-        context.strokeStyle = config.strokeStyle; // Set the color of the line
-        context.stroke();
-    }
-
-    //sidepanel line graph
-    updateLineGraph(){
-        d3.select("#selection-line-chart").selectAll("svg").remove();
-
-
-        let svg = d3.select("#selection-line-chart").append("svg")
-            .attr("width", 300)
-            .attr("height", 300)
-            .append("g")
-            .attr("transform", "translate(" + 50 + "," + 50 + ")");
-
     }
 
 

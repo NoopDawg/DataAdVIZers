@@ -45,7 +45,6 @@ let promises = [
         }
     }),
     d3.json("geojson/states.json"),
-    d3.json("geojson/counties.geojson"),
     d3.csv("data/incomeData_county_1990_2022.csv", function (d) {
         return {
             avg_annual_pay: +d['Annual Average Pay'],
@@ -93,12 +92,11 @@ function createVisualizations(data) {
     const MedianPricesOfHousesSold = data[3];
 
     const statesGeoJSON = data[4];
-    const countiesGeoJSON = data[5];
 
-    const incomeData = data[6];
-    const stateHpiData = data[7];
+    const incomeData = data[5];
+    const stateHpiData = data[6];
 
-    const currentMedianPrices = data[8];
+    const currentMedianPrices = data[7];
 
     let eventHandler = {
         bind: (eventName, handler) => {
@@ -173,7 +171,7 @@ function createVisualizations(data) {
             currentMedianPrices: currentMedianPrices
         }
 
-        mapVis = new MapVis("map", statesGeoJSON, countiesGeoJSON, mapData, eventHandler);
+        mapVis = new MapVis("map", statesGeoJSON, mapData, eventHandler);
 
         mapDoubleLine = new mapDoubleLineChart("#mapDoubleLineChart", mapData);
         // adding listeners for source button
