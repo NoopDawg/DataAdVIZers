@@ -117,9 +117,10 @@ function createVisualizations(data) {
         var pathArray = window.location.pathname.split('/');
         return pathArray[pathArray.length - 1];
     }
+
     const currentPath = getLastPartOfPath();
-    // console.log(currentPath);
-    // INIT VIZ BASED ON CURRENT PAGE
+
+    // EXPLORE DATA PAGE FUNCTIONS
     if (currentPath === 'exploreData.html') {
         const doubleLineData = {
             income: MedianHouseholdIncome,
@@ -135,14 +136,9 @@ function createVisualizations(data) {
         // adding listeners for replay animation button
         replayButton();
 
-        // explore page nav buttons
-        // Find the parent div with id exploreNavBtns
+        // nav buttons
         const exploreNavBtns = document.getElementById('exploreNavBtns');
-
-        // Find all children with class button
         const buttonChildren = exploreNavBtns.querySelectorAll('.button');
-
-        // Attach onhover function for the first child
         buttonChildren[0].addEventListener('mouseover', function() {
             this.innerHTML = "<img src=\"css/arrow-left-solid.svg\" alt=\"Left Arrow\"> Go back";
         });
@@ -150,9 +146,10 @@ function createVisualizations(data) {
             this.innerHTML = "<img src=\"css/arrow-left-solid.svg\" alt=\"Left Arrow\">";
         });
         setTimeout(function() {
-            buttonChildren[1].innerHTML = "Learn what it takes to get a home today <img src=\"css/arrow-right-solid.svg\" alt=\"Right Arrow\">";
+            buttonChildren[1].innerHTML = "Explore a state-level breakdown <img src=\"css/arrow-right-solid.svg\" alt=\"Right Arrow\">";
         }, 9000);
     }
+    // CURRENT MARKET PAGE FUNCTIONS
     if(currentPath === 'currentMarket.html') {
         loanSectionListeners();
         incomeData.sort((a, b) => a.year - b.year)
@@ -172,12 +169,12 @@ function createVisualizations(data) {
         }
 
         mapVis = new MapVis("map", statesGeoJSON, mapData, eventHandler);
-
         mapDoubleLine = new mapDoubleLineChart("#mapDoubleLineChart", mapData);
+       
         // adding listeners for source button
         sourcesButton();
 
-        // footer button
+        // nav buttons
         const backBtn = document.getElementById('backBtn');
         backBtn.addEventListener('mouseover', function() {
             this.innerHTML = "<img src=\"css/arrow-left-solid.svg\" alt=\"Left Arrow\"> Go back";
@@ -197,7 +194,6 @@ function createVisualizations(data) {
         let stateName = event.detail;
         mapDoubleLine.wrangleData(stateName);
     })
-
 
     eventHandler.bind("autoMoveBrush", function(event){
         let newDate = event.detail;
@@ -288,49 +284,31 @@ function updateTimeLineBrush(){
 }
 
 function replayButton(){
-    // Get the button element
     var button = document.getElementById("play-button");
-
-    // Store the original HTML content
     var originalContent = button.innerHTML;
-
-    // Change content on hover
     button.addEventListener("mouseover", function() {
-        // Replace the content with the desired text or HTML
         button.innerHTML = "Replay Animation";
     });
-
-    // Restore content when not hovering
     button.addEventListener("mouseout", function() {
         button.innerHTML = originalContent;
     });
 }
 
 function sourcesButton(){
-    // Get the button element
     var button = document.getElementById("sourcesBtn");
-
-    // Store the original HTML content
     var originalContent = button.innerHTML;
-
-    // Change content on hover
     button.addEventListener("mouseover", function() {
-        // Replace the content with the desired text or HTML
         button.innerHTML = originalContent + " Sources";
     });
-
     button.addEventListener("click", function() {
         showSourcesModal();
     });
-
-    // Restore content when not hovering
     button.addEventListener("mouseout", function() {
         button.innerHTML = originalContent;
     });
 }
 
 function showSourcesModal() {
-    console.log("here")
     document.getElementById('sourcesModal').style.display = 'flex';
 }
 function hideSourcesModal() {
@@ -493,4 +471,3 @@ function getStateName(stateCode) {
 
     return codeToState[stateCode];
 }
-
