@@ -10,7 +10,7 @@ class MapVis {
         this.data = mapData;
         this.incomeData = mapData.incomeData;
         this.stateHpiData = mapData.stateHpiData;
-
+        this.dateMax = d3.max([d3.min(this.incomeData, d => d.date), d3.min(this.stateHpiData, d => d.date)])
 
         this.current_listing_prices = mapData.currentMedianPrices;
 
@@ -44,19 +44,19 @@ class MapVis {
             "Georgia": [0, 0],
             "Hawaii": [20, 0],
             "Idaho": [0, 0],
-            "Illinois": [0, 0],
+            "Illinois": [0, -35],
             "Indiana": [10, -20],
             "Iowa": [0, 0],
             "Kansas": [-20, -20],
             "Kentucky": [0, -30],
             "Louisiana": [0,-20],
-            "Maine": [20, 20],
+            "Maine": [0, 10],
             "Maryland": [10, -20],
             "Massachusetts": [20, -10],
             "Michigan": [20, 0],
             "Minnesota": [0, 0],
             "Mississippi": [0, -20],
-            "Missouri": [0, 0],
+            "Missouri": [0, -20],
             "Montana": [-30, 20],
             "Nebraska": [30, 0],
             "Nevada": [0, 0],
@@ -66,7 +66,7 @@ class MapVis {
             "New York": [0, 0],
             "North Carolina": [20, -20],
             "North Dakota": [10, 10],
-            "Ohio": [0, 0],
+            "Ohio": [0, -20],
             "Oklahoma": [0, -25],
             "Oregon": [0, 0],
             "Pennsylvania": [0, 0],
@@ -74,7 +74,7 @@ class MapVis {
             "South Carolina": [-10, -30],
             "South Dakota": [-10, 0],
             "Tennessee": [-25, -25],
-            "Texas": [0, 0],
+            "Texas": [-20, -60],
             "Utah": [0, 0],
             "Vermont": [0, 0],
             "Virginia": [10, -20],
@@ -116,13 +116,17 @@ class MapVis {
 
         self.path = d3.geoPath().projection(self.projection);
 
+
+
+        self.final_pct_diffs = self.states.map(stateName => self.getStateFinalPctChangeDifference(stateName)).filter(d => d != null);
+        console.log(self.final_pct_diffs)
         //color scale
         self.colorScale = d3.scaleLinear()
             .range([self.minColor, self.maxColor])  // Colors for housing prices
             .domain(
                 [
-                    d3.min(self.current_listing_prices, d => d.median_listing_price),
-                    d3.max(self.current_listing_prices, d => d.median_listing_price)
+                    d3.min(self.final_pct_diffs),
+                    d3.max(self.final_pct_diffs)
                 ]
             )
 
@@ -137,7 +141,7 @@ class MapVis {
                 return d.properties.name;
             })
             .style("fill", function(d) {
-                return self.colorScale(self.getStateMedianListPrice(d.properties.name));
+                return self.colorScale(self.getStateFinalPctChangeDifference(d.properties.name));
             })
             .style("stroke", "black")
             .style("stroke-width", 0.5)
@@ -146,12 +150,15 @@ class MapVis {
                 //change color
                 d3.select(this).style("fill", "#f4a261ff");
                 console.log(d)
+                let stateName = d.properties.name
                 self.eventHandler.trigger("stateSelectionChanged", d.properties.name)
+
+
             })
             .on("mouseout", function(event, d) {
                 //change color
                 console.log(d)
-                d3.select(this).style("fill", self.colorScale(self.getStateMedianListPrice(d.properties.name)   ));
+                d3.select(this).style("fill", self.colorScale(self.getStateFinalPctChangeDifference(d.properties.name)   ));
 
             })
             .on("click", function(event, d) {
@@ -164,6 +171,8 @@ class MapVis {
                 let downPaymentInput = document.getElementById("downPayment")
                 downPaymentInput.value = state_median_price * 0.2
                 downPaymentInput.dispatchEvent(new Event('blur'))
+
+                calculatePayment()
             });
 
 
@@ -184,7 +193,6 @@ class MapVis {
         context.clearRect(0, 0, self.width, self.height);
 
         self.states.forEach(state=> {
-            console.log(state)
             if (state == "District of Columbia") { //was too confusing to include, plus no hover ability
                 console.log("DC");
                 return
@@ -205,6 +213,44 @@ class MapVis {
             self.drawBarForState(position, barHeight, context)
         })
 
+        self.addLegend()
+    }
+
+    addLegend(){
+        const self = this;
+        // Create an SVG element for the legend
+        let legendWidth = 300;
+        let legendHeight = 30;
+
+        let legend = d3.select("#legend")
+            .append("svg")
+            .attr("width", legendWidth)
+            .attr("height", legendHeight)
+            .append("g")
+            .attr("transform", "translate(10,0)");
+
+        // Create a linear gradient for the legend
+        let legendGradient = legend.append("defs")
+            .append("linearGradient")
+            .attr("id", "legend-gradient")
+            .attr("x1", "0%")
+            .attr("y1", "0%")
+            .attr("x2", "100%")
+            .attr("y2", "0%");
+
+        legendGradient.append("stop")
+            .attr("offset", "0%")
+            .attr("style", "stop-color:" + self.minColor + ";stop-opacity:1");
+
+        legendGradient.append("stop")
+            .attr("offset", "100%")
+            .attr("style", "stop-color:" + self.maxColor + ";stop-opacity:1");
+
+        // Create a rectangle to display the gradient
+        legend.append("rect")
+            .attr("width", legendWidth - 20)
+            .attr("height", legendHeight)
+            .style("fill", "url(#legend-gradient)");
     }
 
     getStateData(stateName) {
@@ -233,6 +279,22 @@ class MapVis {
             // Return a default position or handle the error as appropriate
             return { x: 0, y: 0 };
         }
+    }
+
+    getStateFinalPctChangeDifference(stateName) {
+        const self = this;
+        // console.log(stateName)
+        let stateData = self.getStateData(stateName);
+        let stateHpi = stateData.hpi;
+        let stateIncome = stateData.income;
+        // console.log(stateData)
+        if (stateHpi.length == 0 || stateIncome.length == 0) {
+            return;
+        }
+        let stateHpiFinal = stateHpi[stateHpi.length - 1].pct_change;
+        let stateIncomeFinal = stateIncome[stateIncome.length - 1].pct_change;
+        return stateHpiFinal - stateIncomeFinal;
+
     }
 
     adjustPosition(position, stateName) {
