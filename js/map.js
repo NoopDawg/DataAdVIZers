@@ -36,13 +36,13 @@ class MapVis {
             "Arizona": [0, 0],
             "Arkansas": [0, 0],
             "California": [0, 0],
-            "Colorado": [0, 0],
+            "Colorado": [0, -20],
             "Connecticut": [0, 0],
             "Delaware": [10, -20],
             "District of Columbia": [0, 0],
             "Florida": [20, -20],
             "Georgia": [0, 0],
-            "Hawaii": [20, 0],
+            "Hawaii": [18, -5],
             "Idaho": [0, 0],
             "Illinois": [0, -35],
             "Indiana": [10, -20],
@@ -69,7 +69,7 @@ class MapVis {
             "Ohio": [0, -20],
             "Oklahoma": [0, -25],
             "Oregon": [0, 0],
-            "Pennsylvania": [0, 0],
+            "Pennsylvania": [0, -20],
             "Rhode Island": [10, -5],
             "South Carolina": [-10, -30],
             "South Dakota": [-10, 0],
@@ -117,7 +117,7 @@ class MapVis {
         self.path = d3.geoPath().projection(self.projection);
 
 
-        self.final_pct_diffs = self.states.map(stateName => self.getStateFinalPctChangeDifference(stateName)).filter(d => d != null);
+        self.final_pct_diffs = self.states.map(stateName => self.getStateFinalPctChange(stateName)).filter(d => d != null);
         console.log(self.final_pct_diffs)
         //color scale
         self.colorScale = d3.scaleLinear()
@@ -140,7 +140,7 @@ class MapVis {
                 return d.properties.name;
             })
             .style("fill", function(d) {
-                return self.colorScale(self.getStateFinalPctChangeDifference(d.properties.name));
+                return self.colorScale(self.getStateFinalPctChange(d.properties.name));
             })
             .style("stroke", "black")
             .style("stroke-width", 0.5)
@@ -148,16 +148,12 @@ class MapVis {
             .on("mouseover", function(event, d) {
                 //change color
                 d3.select(this).style("fill", "#f4a261ff");
-                console.log(d)
                 let stateName = d.properties.name
                 self.eventHandler.trigger("stateSelectionChanged", d.properties.name)
-
-
             })
             .on("mouseout", function(event, d) {
                 //change color
-                console.log(d)
-                d3.select(this).style("fill", self.colorScale(self.getStateFinalPctChangeDifference(d.properties.name)   ));
+                d3.select(this).style("fill", self.colorScale(self.getStateFinalPctChange(d.properties.name)   ));
 
             })
             .on("click", function(event, d) {
@@ -275,20 +271,15 @@ class MapVis {
         }
     }
 
-    getStateFinalPctChangeDifference(stateName) {
+    getStateFinalPctChange(stateName) {
         const self = this;
-        // console.log(stateName)
         let stateData = self.getStateData(stateName);
         let stateHpi = stateData.hpi;
-        let stateIncome = stateData.income;
-        // console.log(stateData)
-        if (stateHpi.length == 0 || stateIncome.length == 0) {
+        if (stateHpi.length == 0) {
             return;
         }
         let stateHpiFinal = stateHpi[stateHpi.length - 1].pct_change;
-        let stateIncomeFinal = stateIncome[stateIncome.length - 1].pct_change;
         return stateHpiFinal;
-
     }
 
     /**

@@ -186,14 +186,11 @@ class mapDoubleLineChart {
         let vis = this;
 
         // Filter data by state
-        console.log("stateName", stateName);
         vis.displayData = {
             homePrice: vis.stateHpiData.filter(d => d.state === stateName),
             income: vis.incomeData.filter(d => d.state === stateName),
             current_listing_pricing: vis.current_listing_prices.filter(d => d.state === stateName)
         };
-
-        console.log("vis.displayData", vis.displayData);
 
         vis.updateVis();
     }

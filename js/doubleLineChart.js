@@ -66,15 +66,6 @@ class DoubleLineChart {
 
 
         vis.xAxis.call(d3.axisBottom(vis.xScale)
-                // .tickValues(vis.xValues.filter(d => {
-                //     const year = d.getFullYear();
-                //     const month = d.getMonth();
-                //     if (showEveryOtherYear) {
-                //         return uniqueYears.indexOf(year) % 2 === 0 && month === 0; // Show only first month of every other year
-                //     } else {
-                //         return month === 0; // Show only first month of every year
-                //     }
-                // }))
                 .tickFormat(d3.timeFormat("%Y"))
                 .tickPadding(10) // Adjust as needed
                 .tickSizeOuter(0) // Optional: Hide ticks at the ends
@@ -156,31 +147,6 @@ class DoubleLineChart {
         vis.wrangleData();
     }
 
-    // Function to convert date property to "1984-01-01" format
-    convertDateFormat(obj) {
-        // Split the input date string into month and year
-        const [monthStr, yearStr] = obj.period.split('-');
-
-        // Map the month abbreviation to its numerical value
-        const monthAbbreviations = {
-            Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
-            Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
-        };
-
-        const inputDate = new Date(parseInt(yearStr, 10), monthAbbreviations[monthStr]);
-        const year = inputDate.getFullYear();
-        const month = (inputDate.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
-        const day = inputDate.getDate().toString().padStart(2, '0');
-
-        // Combine the formatted components
-        const formattedDate = `${year}-${month}-${day}`;
-
-        // Update the "period" property in the object
-        obj.period = formattedDate;
-        // console.log("formattedDate", formattedDate);
-
-        return formattedDate;
-    }
 
     filterDate(newDate){
         const vis = this;
