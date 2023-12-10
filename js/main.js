@@ -195,6 +195,12 @@ function createVisualizations(data) {
         doubleLineChart.filterDate(newDate);
     });
 
+    eventHandler.bind("stateSelectionChanged", function(event){
+        let stateName = event.detail;
+        mapDoubleLine.wrangleData(stateName);
+    })
+
+
     eventHandler.bind("autoMoveBrush", function(event){
         let newDate = event.detail;
         //lineChartBrush.moveBrush(newDate);

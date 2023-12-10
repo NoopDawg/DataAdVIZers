@@ -9,6 +9,18 @@ class mapDoubleLineChart {
         this.states = data.currentMedianPrices.map(d => d.state);
         console.log(data)
 
+        this.maxPct = d3.max([
+            d3.max(data.stateHpiData, d => d.pct_change),
+            d3.max(data.incomeData, d => d.pct_change)
+        ])
+
+        this.minPct = d3.min([
+            d3.min(data.stateHpiData, d => d.pct_change),
+            d3.min(data.incomeData, d => d.pct_change)
+        ])
+
+
+
         this.initVis();
     }
 
@@ -75,7 +87,11 @@ class mapDoubleLineChart {
             .text("Year");
 
         // Add y-axis
+        vis.svg.append("g") //adds group, axis is called in updateVis
+            .attr("class", "axis-ticks y-axis")
+
         vis.yScale = d3.scaleLinear().range([vis.height, 0]);
+        vis.yScale.domain([vis.minPct, vis.maxPct]);
 
         vis.svg.append("text")
             .attr("class", "axis")
@@ -118,6 +134,15 @@ class mapDoubleLineChart {
                 // Get the x mouse position
                 vis.updateTooltip(mouseX, event);
             });
+
+        vis.svg.append("text")
+            .attr("x", (vis.width))
+            .attr("y", (vis.margin.top))
+            .attr("class", "legend")
+            .attr("id", "linechart-curr-price")
+            .style("text-anchor", "end")
+
+
 
 
         vis.wrangleData("California");
@@ -177,25 +202,8 @@ class mapDoubleLineChart {
     updateVis() {
         let vis = this;
         // Set up scales
-        // let xScale = d3.scaleTime().domain(d3.extent(vis.xValues)).range([0, vis.width]);
-
-        // let yScale = d3.scaleLinear().domain([0, d3.max([...vis.homePrices, ...vis.incomes])]).range([vis.height, 0]);
-        let maxPct = d3.max([
-            d3.max(vis.displayData.homePrice, d => d.pct_change),
-            d3.max(vis.displayData.income, d => d.pct_change)
-        ])
-
-        let minPct = d3.min([
-            d3.min(vis.displayData.homePrice, d => d.pct_change),
-            d3.min(vis.displayData.income, d => d.pct_change)
-        ])
-
-        vis.yScale.domain([minPct, maxPct]);
-
-        // Add y-axis
         vis.yAxis = d3.axisLeft(vis.yScale).ticks(10);
-        vis.svg.append("g")
-            .attr("class", "axis-ticks y-axis")
+        d3.select(".y-axis")
             .call(vis.yAxis);
 
         // Define line functions
@@ -240,6 +248,27 @@ class mapDoubleLineChart {
 
         vis.svg.selectAll(".value1-line, .value2-line")
             .attr("clip-path", "url(#clip)");
+
+        //
+        // vis.svg.select("#linechart-curr-price").text(
+        //     "2023 Median Home Price: $" + vis.displayData.current_listing_pricing[0].median_listing_price.toLocaleString()
+        // )
+
+        let text = vis.svg.select("#linechart-curr-price");
+        text.selectAll("*").remove(); // Clear existing content
+
+        let textData = [
+            "State: " + vis.displayData.current_listing_pricing[0].state,
+            "2023 Median Home Price: $" + vis.displayData.current_listing_pricing[0].median_listing_price.toLocaleString()
+        ];
+
+        textData.forEach((line, index) => {
+            text.append("tspan")
+                .attr("x", (vis.width))
+                .attr("dy", index === 0 ? 0 : "1.2em") // Add space for lines after the first
+                .style("text-anchor", "end")
+                .text(line);
+        });
     }
 
     updateTooltip(mouseX, event) {

@@ -136,10 +136,11 @@ class MapVis {
             .style("stroke", "black")
             .style("stroke-width", 0.5)
             .style("opacity", 0.8)
-            .on("mouseover", function(d) {
+            .on("mouseover", function(event, d) {
                 //change color
                 d3.select(this).style("fill", "#f4a261ff");
                 console.log(d)
+                self.eventHandler.trigger("stateSelectionChanged", d.properties.name)
             })
             .on("mouseout", function(d) {
                 //change color
@@ -266,7 +267,7 @@ class MapVis {
         context.fill();
         //
         context.lineWidth = 1;
-        context.strokeStyle = 'black'; // Set the color of the bar
+        context.strokeStyle = 'rgba(0,89,157,0.79)'; // Set the color of the bar
         context.strokeOpacity = 1;
         context.stroke();
     }
