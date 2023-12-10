@@ -235,6 +235,17 @@ h2{
 
 }
 
+#map-svg {
+    transform: perspective(600px) rotateX(20deg);
+    transform-origin: bottom;
+}
+
+
+/*#line-graph-canvas {*/
+/*    transform: perspective(800px) rotateX(55deg);*/
+/*    transform-origin: bottom;*/
+/*}*/
+
 .result_block{
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 1rem;

@@ -128,6 +128,48 @@ class MapVis {
         }
     }
 
+    rotatePoint(point, angle, origin) {
+        let radians = angle * Math.PI / 180;
+        let sin = Math.sin(radians);
+        let cos = Math.cos(radians);
+        // Translate point to origin
+        point.x -= origin.x;
+        point.y -= origin.y;
+        // Rotate point
+        let xNew = point.x * cos - point.y * sin;
+        let yNew = point.x * sin + point.y * cos;
+        // Translate point back
+        point.x = xNew + origin.x;
+        point.y = yNew + origin.y;
+        return point;
+    }
+
+    apply_perspective(point, tilt_anglef, canvas_hedight, pserspective) {
+        const self = this;
+        let tilt_angle = 15;
+        let canvas_height = self.height;
+        let perspective = 1800;
+
+        let x = point.x;
+        let y = point.y;
+
+        let tilt_radians  = tilt_angle * Math.PI / 180;
+
+        let depth = (canvas_height - y)
+        let perspective_factor = 1 / (1 + (depth / perspective))
+        // console.log(perspective_factor)
+
+        let center_x = self.width / 2
+        let transformed_x = center_x + (x - center_x) * perspective_factor
+        let apparent_y = y - (y * Math.sin(tilt_radians))
+        let transformed_y = apparent_y + (canvas_height * Math.sin(tilt_radians))
+
+        return {x: transformed_x, y: transformed_y}
+    }
+
+// Now use rotatedPoint.x and rotatedPoint.y for drawing on the canvas
+
+
     // Function to draw a line graph for a state
     drawLineGraph(stateData, positionX, positionY, context, config) {
         const self = this;
@@ -147,11 +189,15 @@ class MapVis {
             let y = positionY - (self.lineYScale(point.pct_change));// point.value is the data value
 
             // console.log("x: ", x, " y: ", y)
+            let xy_point = {x: x, y: y}
+            let origin = { x: self.width / 2, y: self.height };
+            xy_point = self.apply_perspective(xy_point, 22, self.height, 1100);
+
 
             if (index === 0) {
-                context.moveTo(x, y);
+                context.moveTo(xy_point.x, xy_point.y);
             } else {
-                context.lineTo(x, y);
+                context.lineTo(xy_point.x, xy_point.y);
             }
         });
 
@@ -167,23 +213,35 @@ class MapVis {
         // Start the path
         context.beginPath();
 
+
+
         // Draw the first line
         stateDataIncome.forEach((point, index) => {
             let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2;
             let y = positionY - (self.lineYScale(point.pct_change));
+
+            let xy_point = {x: x, y: y}
+            xy_point = self.apply_perspective(xy_point, 22, self.height, 1100);
+
             if (index === 0) {
-                context.moveTo(x, y);
+                context.moveTo(xy_point.x, xy_point.y);
             } else {
-                context.lineTo(x, y);
+                context.lineTo(xy_point.x, xy_point.y);
             }
         });
+
+
 
         // Draw the second line in reverse
         for (let i = stateDataHPI.length - 1; i >= 0; i--) {
             let point = stateDataHPI[i];
             let x = positionX + (self.lineXScale(point.date)) - self.maxWidth/2;
             let y = positionY - (self.lineYScale(point.pct_change));
-            context.lineTo(x, y);
+
+            let xy_point = {x: x, y: y}
+            xy_point = self.apply_perspective(xy_point, 22, self.height, 1100);
+
+            context.lineTo(xy_point.x, xy_point.y);
         }
 
         // Close the path and fill
