@@ -62,12 +62,12 @@ class MapVis {
             "Nevada": [0, 0],
             "New Hampshire": [0, 0],
             "New Jersey": [10, -10],
-            "New Mexico": [20, -30],
+            "New Mexico": [10, -30],
             "New York": [0, 0],
             "North Carolina": [20, -20],
             "North Dakota": [10, 10],
             "Ohio": [0, 0],
-            "Oklahoma": [0, 0],
+            "Oklahoma": [0, -25],
             "Oregon": [0, 0],
             "Pennsylvania": [0, 0],
             "Rhode Island": [10, -5],
@@ -118,41 +118,13 @@ class MapVis {
 
         //color scale
         self.colorScale = d3.scaleLinear()
-            .range([self.minColor, self.maxColor]);  // Colors for housing prices
-
-        //Loan Section
-        document.getElementById("loanLength").value = 30
-        document.getElementById("interestRate").value = 7.0
-        let totalLoanInput = document.getElementById("totalLoan");
-
-        totalLoanInput.addEventListener("focus", function() {
-            let value = this.value.replace(/[^0-9.-]+/g, "");
-            console.log(value)
-            this.value = value;
-        });
-
-        totalLoanInput.addEventListener("blur", function() {
-            let value = parseFloat(this.value);
-            if (!isNaN(value)) {
-                this.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-            }
-        });
-
-        let downPayment = document.getElementById("downPayment");
-
-        downPayment.addEventListener("focus", function() {
-            let value = this.value.replace(/[^0-9.-]+/g, "");
-            console.log(value)
-            this.value = value;
-        });
-
-        downPayment.addEventListener("blur", function() {
-            let value = parseFloat(this.value);
-            if (!isNaN(value)) {
-                this.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-            }
-        });
-
+            .range([self.minColor, self.maxColor])  // Colors for housing prices
+            .domain(
+                [
+                    d3.min(self.current_listing_prices, d => d.median_listing_price),
+                    d3.max(self.current_listing_prices, d => d.median_listing_price)
+                ]
+            )
 
         d3.select("#map-canvas").style("pointer-events", "none");
         self.svg.selectAll("path")
@@ -164,7 +136,9 @@ class MapVis {
             .attr("id", function(d) {
                 return d.properties.name;
             })
-            .style("fill", "white")
+            .style("fill", function(d) {
+                return self.colorScale(self.getStateMedianListPrice(d.properties.name));
+            })
             .style("stroke", "black")
             .style("stroke-width", 0.5)
             .style("opacity", 0.8)
@@ -174,12 +148,14 @@ class MapVis {
                 console.log(d)
                 self.eventHandler.trigger("stateSelectionChanged", d.properties.name)
             })
-            .on("mouseout", function(d) {
+            .on("mouseout", function(event, d) {
                 //change color
-                d3.select(this).style("fill", "white");
+                console.log(d)
+                d3.select(this).style("fill", self.colorScale(self.getStateMedianListPrice(d.properties.name)   ));
+
             })
             .on("click", function(event, d) {
-                let state_median_price = self.current_listing_prices.filter( e => e.state == d.properties.name)[0].median_listing_price
+                let state_median_price = self.getStateMedianListPrice(d.properties.name)
                 console.log(state_median_price)
                 let totalLoanInput = document.getElementById("totalLoan")
                 totalLoanInput.value = state_median_price
@@ -237,6 +213,11 @@ class MapVis {
         let stateHpi = self.stateHpiData.filter(e => e.state == stateName);
         let stateCurrentMedianPrice = self.current_listing_prices.filter(e => e.state == stateName);
         return {income: stateIncome, hpi: stateHpi, current_listing_prices: stateCurrentMedianPrice[0]}
+    }
+
+    getStateMedianListPrice(stateName) {
+        const self = this;
+        return self.current_listing_prices.filter(e => e.state == stateName)[0].median_listing_price
     }
 
     getStatePosition(stateName) {

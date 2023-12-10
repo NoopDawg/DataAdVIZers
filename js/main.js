@@ -156,7 +156,7 @@ function createVisualizations(data) {
         }, 9000);
     }
     if(currentPath === 'currentMarket.html') {
-
+        loanSectionListeners();
         incomeData.sort((a, b) => a.year - b.year)
         stateHpiData.sort((a, b) => (a.year + (0.1 * a.quarter)) - (b.year + (0.1 * b.quarter)))
 
@@ -207,6 +207,42 @@ function createVisualizations(data) {
         timeLineFilter.moveBrush(newDate);
         doubleLineChart.filterDate(newDate);
     })
+}
+
+function loanSectionListeners(){
+    //Loan Section
+    document.getElementById("loanLength").value = 30
+    document.getElementById("interestRate").value = 7.0
+    let totalLoanInput = document.getElementById("totalLoan");
+
+    totalLoanInput.addEventListener("focus", function() {
+        let value = this.value.replace(/[^0-9.-]+/g, "");
+        console.log(value)
+        this.value = value;
+    });
+
+    totalLoanInput.addEventListener("blur", function() {
+        let value = parseFloat(this.value);
+        if (!isNaN(value)) {
+            this.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        }
+    });
+
+    let downPayment = document.getElementById("downPayment");
+
+    downPayment.addEventListener("focus", function() {
+        let value = this.value.replace(/[^0-9.-]+/g, "");
+        console.log(value)
+        this.value = value;
+    });
+
+    downPayment.addEventListener("blur", function() {
+        let value = parseFloat(this.value);
+        if (!isNaN(value)) {
+            this.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        }
+    });
+
 }
 
 /**
