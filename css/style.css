@@ -11,7 +11,7 @@ font-family: 'Proza Libre', sans-serif;
     --midnight-green: #005f73ff;
     --dark-cyan: #0a9396ff;
     --tiffany-blue: #94d2bdff;
-    --eggshell: #f7f1deff;
+    --eggshell: #fffdf8;
     --gamboge: #ee9b00ff;
     --alloy-orange: #ca6702ff;
     --rust: #bb3e03ff;
@@ -53,7 +53,7 @@ h2{
 }
 
 .modular_block{
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 253, 248, 0.9);
     border-radius: 1rem;
     padding: 1rem;
     min-height: 30vh;
@@ -166,7 +166,7 @@ h2{
 }
 
 .modular_block_short{
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 253, 248, 0.9);
     border-radius: 1rem;
     padding: 1rem;
     height: 10vh;
@@ -177,9 +177,9 @@ h2{
 }
 
 .tooltip {
-    background-color: #FDF7E4;
-    padding: 10px;
-    border: 2px solid black;
+    background-color: var(--eggshell);
+    padding: 1rem;
+    border: 2px solid var(--midnight-green);
     border-radius: 5px;
     color: var(--prussian-blue);
 }

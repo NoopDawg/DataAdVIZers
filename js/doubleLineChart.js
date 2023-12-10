@@ -108,14 +108,14 @@ class DoubleLineChart {
             .attr("x", 30)
             .attr("y", 20)
             .attr("class", "legend")
-            .style("fill", "var(--midnight-green)")
+            .style("fill", "var(--alloy-orange)")
             .text("Median House Price");
 
         vis.svg.append("text")
             .attr("x", 30)
             .attr("y", 50)
             .attr("class", "legend")
-            .style("fill", "var(--rust)")
+            .style("fill", "var(--auburn)")
             .text("Median Household Income");
 
         // Tooltips
@@ -264,7 +264,7 @@ class DoubleLineChart {
                 enter => enter.append("path")
                     .attr("class", "line value1-line")
                     .attr("fill", "none")
-                    .attr("stroke", "var(--midnight-green)"),
+                    .attr("stroke", "var(--alloy-orange)"),
                 update => update
             )
             .attr("d", value1Line);
@@ -276,7 +276,7 @@ class DoubleLineChart {
                 enter => enter.append("path")
                     .attr("class", "line value2-line")
                     .attr("fill", "none")
-                    .attr("stroke", "var(--rust)"),
+                    .attr("stroke", "var(--auburn)"),
                 update => update
             )
             .transition().duration(50).attr("d", value2Line);
@@ -295,19 +295,20 @@ class DoubleLineChart {
         const nearestHomePrice = vis.getNearestDataPoint(vis.data.homePrice, x0);
         const nearestIncome = vis.getNearestDataPoint(vis.data.income, x0);
 
-
-        let xDate = formatDate(x0);
+        let xDate = x0.getFullYear().toString();
 
         let percentIncomeChange = ((nearestIncome.value - vis.data.income[0].value) / vis.data.income[0].value) * 100;
         let percentHomePriceChange = ((nearestHomePrice.value - vis.data.homePrice[0].value) / vis.data.homePrice[0].value) * 100;
 
+        const leftPosition = (event.pageX > 1000) ? (event.pageX - 250) + "px" : (event.pageX + 30) + "px";
+        
         // Update and show the tooltip
-        vis.tooltip.html("Date: " + xDate +
-            "<br>% Increase in Home Price: " + percentHomePriceChange.toFixed(0) + "% " +
-            "<br>% Increase Income: " + percentIncomeChange.toFixed(0) + "% "
+        vis.tooltip.html("Year: <b>" + xDate +
+            "</b><br>Increase in Home Price: <b>" + percentHomePriceChange.toFixed(0) + "% </b>" +
+            "<br>Increase Income: <b>" + percentIncomeChange.toFixed(0) + "% </b>"
         )
             .style("opacity", 1)
-            .style("left", (event.pageX + 30) + "px")
+            .style("left", leftPosition)
             .style("top", (event.pageY - 28) + "px");
 
         // Update and show the vertical line

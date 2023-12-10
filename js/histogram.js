@@ -211,10 +211,10 @@ class HistogramRace {
                 d3.select("#histogram-tooltip")
                     .attr("text-anchor", "left")
                     .classed("hidden", false)
-                    .style("opacity", .8)
+                    .style("opacity", 1)
                     .style("left", self.boundingClientRect.left + xPosition + "px")
                     .style("top", self.boundingClientRect.top + yPosition + "px")
-                    .html("Price Band: " + d.price_band + "<br/>" + "Percentage: " + d.percentage + "%")
+                    .html("Price Band: <b>" + d.price_band + "</b><br/>" + "Percentage: <b>" + d.percentage + "%</b>")
             })
             .on("mouseout", function (event, d) {
                 self.currentTooltipBar = null;

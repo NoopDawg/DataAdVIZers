@@ -122,7 +122,7 @@ function createVisualizations(data) {
         timeLineFilter = new TimeLineFilter("timeline", timeLineData, eventHandler);
         doubleLinecChart = new DoubleLineChart("#doubleLineChart", doubleLineData);
 
-        autoPlayViz();
+        // autoPlayViz();
 
         replayButton();
 
