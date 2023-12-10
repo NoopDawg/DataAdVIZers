@@ -55,11 +55,10 @@ class MapVis {
             .attr("transform", `translate(${self.margin.left}, ${self.margin.top})`);
 
         // Init Canvas
-        self.canvas = d3.select("#line-graph-canvas")
+        self.canvas = d3.select("#map-canvas")
             .attr("width", self.width + self.margin.left + self.margin.right)
             .attr("height", self.height + self.margin.top + self.margin.bottom)
             .attr("class", "plot-canvas")
-            .attr('id', `map-canvas`);
 
         //Map Projection
         self.projection = d3.geoAlbersUsa()
@@ -71,6 +70,8 @@ class MapVis {
         //color scale
         self.colorScale = d3.scaleLinear()
             .range([self.minColor, self.maxColor]);  // Colors for housing prices
+
+        d3.select("#map-canvas").style("pointer-events", "none");
 
         self.svg.selectAll("path")
             .data(self.statesGeoJSON.features
@@ -85,6 +86,15 @@ class MapVis {
             .style("stroke", "black")
             .style("stroke-width", 0.5)
             .style("opacity", 0.8)
+            .on("mouseover", function(d) {
+                //change color
+                d3.select(this).style("fill", "#f4a261ff");
+                console.log(d)
+            })
+            .on("mouseout", function(d) {
+                //change color
+                d3.select(this).style("fill", "white");
+            })
 
 
         let maxPct_change = d3.max([d3.max(self.stateHpiData, d => d.pct_change),d3.max(self.incomeData, d => d.pct_change)])
@@ -164,7 +174,7 @@ class MapVis {
         let point = self.apply_perspective(stateCentroid)
         const baseX = point.x;
         const baseY = point.y;
-        const barWidth = 5; // Set the width of the bar
+        const barWidth = 10; // Set the width of the bar
 
         // Apply perspective calculations here
         // Calculate top coordinates after applying perspective
@@ -184,8 +194,8 @@ class MapVis {
 
         context.beginPath();
         context.moveTo(blx, baseY);
-        context.lineTo(tlx, topY);
-        context.lineTo(trx, topY);
+        context.lineTo((tlx + trx) /2, topY);
+        // context.lineTo(trx, topY);
         context.lineTo(brx, baseY);
         context.closePath();
 
@@ -201,7 +211,7 @@ class MapVis {
 
     apply_perspective(point) {
         const self = this;
-        let tilt_angle = 12;
+        let tilt_angle = 15;
         let canvas_height = self.height;
         let perspective = 1700;
 
