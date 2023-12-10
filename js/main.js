@@ -303,9 +303,14 @@ function hideSourcesModal() {
     document.getElementById('sourcesModal').style.display = 'none';
 }
 
+function parseFloatDollars(value) {
+    let number = value.replace(/[^0-9.-]+/g, "");
+    return parseFloat(number);
+}
+
 function calculatePayment() {
-    var totalLoan = parseFloat(document.getElementById("totalLoan").value) || 0;
-    var downPayment = parseFloat(document.getElementById("downPayment").value) || 0;
+    var totalLoan = parseFloatDollars(document.getElementById("totalLoan").value) || 0;
+    var downPayment = parseFloatDollars(document.getElementById("downPayment").value) || 0;
     var loanLength = parseFloat(document.getElementById("loanLength").value) || 0;
     var interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
 
@@ -316,8 +321,9 @@ function calculatePayment() {
     var x = Math.pow(1 + calculatedInterest, calculatedPayments);
     var monthlyPayment = (principal * x * calculatedInterest) / (x - 1);
 
-    document.getElementById("result").innerHTML = "Total Loan Amount: $" + totalLoan.toFixed(2) +
-            "<br>Monthly Payment: $" + monthlyPayment.toFixed(2);
+    // value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    document.getElementById("result").innerHTML = "Total Loan Amount: " + totalLoan.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) +
+            "<br>Monthly Payment: " + monthlyPayment.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
   }
 
  function getStateCode(stateName) {

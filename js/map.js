@@ -14,7 +14,6 @@ class MapVis {
 
         this.current_listing_prices = mapData.currentMedianPrices;
 
-
         this.maxWidth = 60
         this.maxHeight = 60
 
@@ -58,7 +57,7 @@ class MapVis {
             "Minnesota": [0, 0],
             "Mississippi": [0, -20],
             "Missouri": [0, 0],
-            "Montana": [0, 0],
+            "Montana": [-30, 20],
             "Nebraska": [30, 0],
             "Nevada": [0, 0],
             "New Hampshire": [0, 0],
@@ -121,8 +120,41 @@ class MapVis {
         self.colorScale = d3.scaleLinear()
             .range([self.minColor, self.maxColor]);  // Colors for housing prices
 
-        d3.select("#map-canvas").style("pointer-events", "none");
+        //Loan Section
+        document.getElementById("loanLength").value = 30
+        document.getElementById("interestRate").value = 7.0
+        let totalLoanInput = document.getElementById("totalLoan");
 
+        totalLoanInput.addEventListener("focus", function() {
+            let value = this.value.replace(/[^0-9.-]+/g, "");
+            console.log(value)
+            this.value = value;
+        });
+
+        totalLoanInput.addEventListener("blur", function() {
+            let value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                this.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            }
+        });
+
+        let downPayment = document.getElementById("downPayment");
+
+        downPayment.addEventListener("focus", function() {
+            let value = this.value.replace(/[^0-9.-]+/g, "");
+            console.log(value)
+            this.value = value;
+        });
+
+        downPayment.addEventListener("blur", function() {
+            let value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                this.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            }
+        });
+
+
+        d3.select("#map-canvas").style("pointer-events", "none");
         self.svg.selectAll("path")
             .data(self.statesGeoJSON.features
             )
@@ -146,6 +178,17 @@ class MapVis {
                 //change color
                 d3.select(this).style("fill", "white");
             })
+            .on("click", function(event, d) {
+                let state_median_price = self.current_listing_prices.filter( e => e.state == d.properties.name)[0].median_listing_price
+                console.log(state_median_price)
+                let totalLoanInput = document.getElementById("totalLoan")
+                totalLoanInput.value = state_median_price
+                totalLoanInput.dispatchEvent(new Event('blur'))
+
+                let downPaymentInput = document.getElementById("downPayment")
+                downPaymentInput.value = state_median_price * 0.2
+                downPaymentInput.dispatchEvent(new Event('blur'))
+            });
 
 
         let maxPct_change = d3.max([d3.max(self.stateHpiData, d => d.pct_change),d3.max(self.incomeData, d => d.pct_change)])
