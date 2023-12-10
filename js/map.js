@@ -18,6 +18,10 @@ class MapVis {
         this.maxWidth = 60
         this.maxHeight = 60
 
+        //tilt parameters -- BE CAREFUL CHANGING THESE
+        this.tilt_angle = 17;
+        this.perspective = 1700;
+
         this.states = statesGeoJSON.features.map(d => d.properties.name);
         this.eventHandler = _eventHandler;
         this.data = [];
@@ -269,9 +273,9 @@ class MapVis {
 
     apply_perspective(point) {
         const self = this;
-        let tilt_angle = 17;
+        let tilt_angle = self.tilt_angle;
         let canvas_height = self.height;
-        let perspective = 1700;
+        let perspective = self.perspective;
 
         let x = point.x;
         let y = point.y;
