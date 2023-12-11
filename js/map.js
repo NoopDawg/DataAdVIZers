@@ -16,7 +16,7 @@ class MapVis {
         this.maxHeight = 60
 
         //tilt parameters -- BE CAREFUL CHANGING THESE
-        this.tilt_angle = 17;
+        this.tilt_angle = 14;
         this.perspective = 1700;
 
         this.states = statesGeoJSON.features.map(d => d.properties.name);
@@ -94,8 +94,10 @@ class MapVis {
         const self = this;
 
         self.margin = { top: 0, right: 0, bottom: 0, left: 0 }; //nothing needed
-        self.width = document.getElementById(self.parentElement).getBoundingClientRect().width - self.margin.left - self.margin.right;
-        self.height = document.getElementById(self.parentElement).getBoundingClientRect().height - self.margin.top - self.margin.bottom;
+        self.width = 900
+            // document.getElementById(self.parentElement).getBoundingClientRect().width - self.margin.left - self.margin.right;
+        self.height = 600
+            // document.getElementById(self.parentElement).getBoundingClientRect().height - self.margin.top - self.margin.bottom;
 
         //SVG Area
         self.svg = d3.select("#map-svg")
@@ -112,7 +114,7 @@ class MapVis {
 
         //Map Projection
         self.projection = d3.geoAlbersUsa()
-            .scale(1500)  // Adjust as needed
+            .scale(1000)  // Adjust as needed
             .translate([self.width/2, self.height/2]);  // Adjust as needed
 
         self.path = d3.geoPath().projection(self.projection);

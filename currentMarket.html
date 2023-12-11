@@ -19,15 +19,13 @@
             <div id="main-content" class="d-flex flex-wrap gap-4 justify-content-center">                
 				<div class="row w-100">
 					<div id="map-area" class="col-xl-8 row">
-						<div class="d-flex align-items-center col-xl-2">
-							<canvas id="spike-legend-canvas"></canvas>
-						</div>
 
 						<!-- map populates here -->
 						<div class="col-xl-10">
 							<div id="map" style="position: relative;">
 								<svg id="map-svg" style="position: absolute; top: 0; left: 0; z-index: 1;"></svg>
 								<canvas id="map-canvas" style="position: absolute; top: 0; left: 0; z-index: 2;"></canvas>
+								<canvas id="spike-legend-canvas" style="position: absolute; top: 0; left: 0; z-index: 3;"></canvas>
 							</div>
 							<div class="subtext text-end">Click a state to explore its data</div>
 
