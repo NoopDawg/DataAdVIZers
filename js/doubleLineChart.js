@@ -23,8 +23,6 @@ class DoubleLineChart {
         this.dateMax = new Date(d3.max(this.combinedArray, d => d.period));
         this.dateMin = new Date(d3.min(this.combinedArray, d => d.period));
 
-
-
         this.initVis();
     }
 
