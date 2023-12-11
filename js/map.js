@@ -425,7 +425,7 @@ class MapVis {
         context.arc(baseX, baseY, radius, 0, Math.PI, false);
         context.closePath();
 
-        context.fillStyle = '#84121C'; // Set the color of the bar
+        context.fillStyle = '#B95100'; // Set the color of the bar
         context.fillOpacity = 1;
         context.fill();
         //
