@@ -56,7 +56,7 @@ class MapVis {
             "Georgia": [0, 0],
             "Hawaii": [12, -5],
             "Idaho": [0, 0],
-            "Illinois": [0, -35],
+            "Illinois": [0, -15],
             "Indiana": [10, -20],
             "Iowa": [0, 0],
             "Kansas": [-20, -20],
