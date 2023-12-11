@@ -60,6 +60,8 @@ class mapDoubleLineChart {
             .attr("transform", "translate(0," + vis.height + ")")
             .attr("class", "axis-ticks x-axis")
 
+
+
         const uniqueYears = Array.from(new Set(vis.incomeData.map(d => d.date.getFullYear())));
         const showEveryOtherYear = uniqueYears.length > 20;
 
@@ -85,6 +87,12 @@ class mapDoubleLineChart {
             .style("text-anchor", "middle")
             .attr("class", "axis")
             .text("Year");
+
+        vis.xAxis.selectAll(".tick text")
+            .style("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("dy", "0.5em")
+            .attr("transform", "rotate(-45)");
 
         // Add y-axis
         vis.svg.append("g") //adds group, axis is called in updateVis
