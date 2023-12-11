@@ -255,8 +255,8 @@ h2{
 } */
 
 #map {
-    min-height: 60vh;
-    /* height: 300px;
+    /* min-height: 60vh; */
+    height: 650px;
     width: 500px; */
 }
 
