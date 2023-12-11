@@ -251,21 +251,24 @@ class mapDoubleLineChart {
         //     "2023 Median Home Price: $" + vis.displayData.current_listing_pricing[0].median_listing_price.toLocaleString()
         // )
 
-        let text = vis.svg.select("#linechart-curr-price");
-        text.selectAll("*").remove(); // Clear existing content
+        // let text = vis.svg.select("#linechart-curr-price");
+        // text.selectAll("*").remove(); // Clear existing content
 
-        let textData = [
-            "State: " + vis.displayData.current_listing_pricing[0].state,
-            "2023 Median Home Price: $" + vis.displayData.current_listing_pricing[0].median_listing_price.toLocaleString()
-        ];
+        // let textData = [
+        //     "State: " + vis.displayData.current_listing_pricing[0].state,
+        //     "2023 Median Home Price: $" + vis.displayData.current_listing_pricing[0].median_listing_price.toLocaleString()
+        // ];
 
-        textData.forEach((line, index) => {
-            text.append("tspan")
-                .attr("x", (vis.width))
-                .attr("dy", index === 0 ? 0 : "1.2em") // Add space for lines after the first
-                .style("text-anchor", "end")
-                .text(line);
-        });
+        // textData.forEach((line, index) => {
+        //     text.append("tspan")
+        //         .attr("x", (vis.width))
+        //         .attr("dy", index === 0 ? 0 : "1.2em") // Add space for lines after the first
+        //         .style("text-anchor", "end")
+        //         .text(line);
+        // });
+
+        document.getElementById('currentState').innerText = vis.displayData.current_listing_pricing[0].state;
+        document.getElementById('currentPrice').innerText = "$" + vis.displayData.current_listing_pricing[0].median_listing_price.toLocaleString();
     }
 
     updateTooltip(mouseX, event) {

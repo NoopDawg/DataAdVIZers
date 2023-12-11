@@ -330,3 +330,7 @@ h3{
 .modalDiv button:hover{
     color: var(--eggshell);
 }
+
+#currentPrice{
+    font-weight: bold;
+}
