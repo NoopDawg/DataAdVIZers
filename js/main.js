@@ -109,7 +109,6 @@ function createVisualizations(data) {
         }
     }
 
-
     //
     // CREATING VIZ BASED ON CURRENT PAGE
     //

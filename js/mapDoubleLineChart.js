@@ -28,7 +28,7 @@ class mapDoubleLineChart {
         let vis = this;
 
         // Set up the SVG and chart dimensions
-        vis.margin = { top: 20, right: 40, bottom: 85, left: 50 };
+        vis.margin = { top: 20, right: 40, bottom: 55, left: 50 };
         vis.width = document.querySelector(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.querySelector(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 

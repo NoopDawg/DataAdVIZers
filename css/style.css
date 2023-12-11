@@ -169,12 +169,6 @@ h2{
 }
 
 /* EXPLORE PAGE  */
-
-/* #histogramRace {
-    height: 400px;
-    width: 50%;
-} */
-
 .selection{
     fill: var(--midnight-green);
     stroke: var(--tiffany-blue);
@@ -220,10 +214,12 @@ h2{
 .brush > .selection {
     stroke-opacity: 0.3;
 }
+
 .axis-ticks, .tick, .axis-labels, .axis-label, .y-axis, .x-axis {
     color: var(--prussian-blue);
     font-family: 'Proza Libre', sans-serif;
 }
+
 #timeline .tick{
     font-size: 1.25rem;
 }
@@ -245,7 +241,7 @@ h2{
     color: var(--prussian-blue);
 }
 
-.maptooltip {
+/* .maptooltip {
     position: absolute;
     text-align: center;
     width: 60px;
@@ -256,11 +252,12 @@ h2{
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
-}
+} */
 
 #map {
     min-height: 60vh;
-
+    /* height: 300px;
+    width: 500px; */
 }
 
 #map-svg {
@@ -269,15 +266,20 @@ h2{
 }
 
 #mapDoubleLineChart {
-    height: 30vh;
-
+    /* height: 30vh; */
+    height: 250px;
+    font-size: 1rem;
 }
 
-
-/*#line-graph-canvas {*/
-/*    transform: perspective(800px) rotateX(55deg);*/
-/*    transform-origin: bottom;*/
-/*}*/
+#calc {
+   color: var(--prussian-blue);
+}
+#calc label {
+    font-size: 1rem;
+}
+#calc button {
+    border: 1px solid var(--midnight-green);
+}
 
 .result_block{
     background-color: rgba(255, 255, 255, 0.7);
