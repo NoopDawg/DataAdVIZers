@@ -20,6 +20,17 @@ class MapVis {
         this.perspective = 1700;
 
         this.states = statesGeoJSON.features.map(d => d.properties.name);
+        let moveStatesToFront = ["Delaware", "Rhode Island"]
+        this.states.sort(
+            function (a, b) {
+                // if a in moveStatesToFront, return -1
+                if (moveStatesToFront.includes(a)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        )
         this.eventHandler = _eventHandler;
         this.data = [];
         this.displayData = [];
@@ -27,7 +38,7 @@ class MapVis {
 
         this.minColor = "#EFD5AE";
         this.maxColor = "#E58800";
-        this.barHeightMax = 200
+        this.barHeightMax = 160
         this.barWidth = 10
 
         //when projection calculation didn't match perfectly, manual adjustments were made here
@@ -39,11 +50,11 @@ class MapVis {
             "California": [0, 0],
             "Colorado": [0, -20],
             "Connecticut": [0, 0],
-            "Delaware": [10, -20],
+            "Delaware": [10, 0],
             "District of Columbia": [0, 0],
             "Florida": [20, -20],
             "Georgia": [0, 0],
-            "Hawaii": [18, -5],
+            "Hawaii": [12, -5],
             "Idaho": [0, 0],
             "Illinois": [0, -35],
             "Indiana": [10, -20],
@@ -70,7 +81,7 @@ class MapVis {
             "Ohio": [0, -20],
             "Oklahoma": [0, -25],
             "Oregon": [0, 0],
-            "Pennsylvania": [0, -20],
+            "Pennsylvania": [0, 10],
             "Rhode Island": [10, -5],
             "South Carolina": [-10, -30],
             "South Dakota": [-10, 0],
@@ -79,8 +90,8 @@ class MapVis {
             "Utah": [0, 0],
             "Vermont": [0, 0],
             "Virginia": [10, -20],
-            "Washington": [0, 30],
-            "West Virginia": [0, -30],
+            "Washington": [0, 10],
+            "West Virginia": [0, -10],
             "Wisconsin": [0, 0],
             "Wyoming": [0, 0]
         };
