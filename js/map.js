@@ -25,8 +25,8 @@ class MapVis {
         this.displayData = [];
         this.charts = {};
 
-        this.minColor = "#94d2bdff";
-        this.maxColor = "#ca6702ff";
+        this.minColor = "#EFD5AE";
+        this.maxColor = "#E58800";
         this.barHeightMax = 200
         this.barWidth = 10
 
@@ -148,7 +148,7 @@ class MapVis {
             .style("opacity", 0.8)
             .on("mouseover", function(event, d) {
                 //change color
-                d3.select(this).style("fill", "#f4a261ff");
+                d3.select(this).style("fill", "var(--tiffany-blue)");
                 let stateName = d.properties.name
                 self.eventHandler.trigger("stateSelectionChanged", d.properties.name)
             })
@@ -423,12 +423,12 @@ class MapVis {
         context.arc(baseX, baseY, radius, 0, Math.PI, false);
         context.closePath();
 
-        context.fillStyle = 'rgba(23,143,234,0.79)'; // Set the color of the bar
+        context.fillStyle = '#84121C'; // Set the color of the bar
         context.fillOpacity = 1;
         context.fill();
         //
         context.lineWidth = 1;
-        context.strokeStyle = 'rgba(0,89,157,0.79)'; // Set the color of the bar
+        context.strokeStyle = '#FFFFF'; // Set the color of the bar
         context.strokeOpacity = 1;
         context.stroke();
         context.fillStyle = "#000000";
