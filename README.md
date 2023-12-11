@@ -1,8 +1,10 @@
 # CSCI-171 Final Project Repository
 
 ## Project Website
-https://anupjonchhe.com/DataAdVIZers/index.html<br>
+https://anupjonchhe.com/DataAdVIZers/index.html
 <em>please view using chrome, firefox has an issue with a viz on the second page</em>
+
+See a video demo of the website here: [ClipChamp](https://clipchamp.com/watch/Zb1akw8tWJW)
 
 ## Overview
 Welcome to the CSCI-171 Final Project Repository! 
