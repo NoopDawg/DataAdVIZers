@@ -333,7 +333,7 @@ function calculatePayment() {
     var monthlyPayment = (principal * x * calculatedInterest) / (x - 1);
 
     // value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    document.getElementById("result").innerHTML = "Total Loan Amount: " + totalLoan.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) +
+    document.getElementById("result").innerHTML = "Total Loan Amount: " + principal.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) +
             "<br>Monthly Payment: " + monthlyPayment.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
   }
 
